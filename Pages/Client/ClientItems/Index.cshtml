@@ -1,0 +1,106 @@
+@page
+@model MyRazorApp.Pages.Client.ClientItems.IndexModel
+@{
+    ViewData["Title"] = "Available Items";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/inventory-gallery.css" asp-append-version="true" />
+}
+
+<div class="container">
+    
+    <header class="page-header">
+        <h2 class="page-title"><i class="fas fa-boxes"></i> Available Items</h2>
+    </header>
+
+    <form method="get" id="searchForm" class="form-search-filter">
+        
+        <div class="input-group-field">
+            
+            <div class="form-group-inline" style="flex: 1;">
+                <i class="fas fa-filter icon-prefix"></i>
+                <select asp-for="FilterCategory" class="form-control" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <option value="@cat" selected="@(Model.FilterCategory == cat ? "selected" : null)">
+                            @cat
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group-inline" style="flex: 2;">
+                <i class="fas fa-search icon-prefix"></i>
+                <input asp-for="Search" class="form-control search-input-group" placeholder="Search by name or code" />
+                <button type="submit" class="btn btn-primary search-btn-group">Search</button>
+            </div>
+            
+        </div>
+        
+        <div class="form-actions">
+            @if (!string.IsNullOrEmpty(Model.Search) || !string.IsNullOrEmpty(Model.FilterCategory))
+            {
+                <button type="button" class="btn btn-secondary" onclick="resetSearchForm()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            }
+        </div>
+    </form>
+    
+    <h3 class="items-title">Items @(string.IsNullOrEmpty(Model.FilterCategory) ? "" : $"in '{Model.FilterCategory}'")</h3>
+
+    @if (!Model.Items.Any())
+    {
+        <p class="no-items">No items found matching your search criteria.</p>
+    }
+    else
+    {
+        <div class="inventory-grid">
+            @foreach (var item in Model.Items)
+            {
+                <div class="inventory-card">
+                    <div class="card-image">
+                        <img src="@(string.IsNullOrEmpty(item.ImagePath) ? "/uploads/items/default.png" : $"/uploads/items/{item.ImagePath}")"
+                             alt="@item.Name" />
+                    </div>
+                    <div class="card-content">
+                        <h3>@item.Name</h3>
+                        <p class="code">Code: <span>@item.Code</span></p>
+                        <p class="category">Category: <span>@item.Category</span></p>
+                        <p class="description">@item.Description</p>
+                        <p class="quantity @(item.Quantity <= 5 ? "low-stock" : "")">
+                            Available Qty: **@item.Quantity**
+                        </p>
+                        <div class="action">
+                            @if (item.Quantity > 0)
+                            {
+                                <a asp-page="/Client/ClientItems/BorrowItem"
+                                   asp-route-ItemId="@item.Id"
+                                   class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus-circle"></i> Borrow
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="btn btn-danger btn-sm disabled">Out of Stock</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function resetSearchForm() {
+            document.getElementById('FilterCategory').value = '';
+            document.getElementById('Search').value = '';
+            document.getElementById('searchForm').submit();
+        }
+    </script>
+}

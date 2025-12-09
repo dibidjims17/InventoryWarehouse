@@ -1,0 +1,73 @@
+@page
+@model MyRazorApp.Pages.Admin.Users.EditModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-forms.css" asp-append-version="true" />
+}
+
+<div class="container">
+    
+    <header class="page-header">
+        <h2 class="page-title"><i class="fas fa-user-edit"></i> Edit User</h2>
+    </header>
+    
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            @Html.Raw(Model.SuccessMessage)
+            <br />
+            Redirecting in 
+            <span id="countdown" class="countdown" 
+                data-seconds="3" 
+                data-redirect="/Admin/Users/Index"></span> 
+            seconds...
+        </div>
+    }
+
+    <form method="post" class="form">
+        <input type="hidden" asp-for="EditUser.UserId" />
+
+        <div class="form-group">
+            <label asp-for="EditUser.Username">Username</label>
+            <input asp-for="EditUser.Username" class="input-text" required />
+            <span asp-validation-for="EditUser.Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EditUser.Email">Email</label>
+            <input asp-for="EditUser.Email" type="email" class="input-text" required />
+            <span asp-validation-for="EditUser.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EditUser.Role">Role</label>
+            <select asp-for="EditUser.Role" class="input-select">
+                @foreach (var role in Model.Roles)
+                {
+                    <option value="@role" selected="@(role == Model.EditUser.Role ? "selected" : null)">
+                        @role
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="EditUser.Role" class="text-danger"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <a asp-page="/Admin/Users/Index" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/countdown.js"></script>
+}

@@ -1,0 +1,110 @@
+/*
+|--------------------------------------------------------------------------
+| ACTIVITY REPORTS STYLES (activity-reports.css)
+|--------------------------------------------------------------------------
+| Styles for the Activity Logs table view and filtering elements.
+*/
+
+/* --- 1. Filter Layout --- */
+
+.form-filter-inline {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--bg-color-content);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-filter-inline .form-group-inline {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+    max-width: 400px;
+}
+
+.form-filter-inline .icon-prefix {
+    position: absolute;
+    left: 10px;
+    color: var(--text-color-light);
+    z-index: 1;
+}
+
+.form-filter-inline .form-control {
+    padding-left: 35px;
+}
+
+/* --- CUSTOM DROPDOWN ICON STYLING --- */
+
+/* 1. Hide the default browser arrow on the select element */
+.form-group-inline.filter-select-wrapper .form-control {
+    /* Standard properties to hide the native dropdown arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Add padding-right to prevent text from overlapping the custom icon */
+    padding-right: 30px; 
+}
+
+/* 2. Inject the custom Font Awesome icon (fa-chevron-down) using a pseudo-element */
+.form-group-inline.filter-select-wrapper::after {
+    font-family: "Font Awesome 5 Free"; /* Ensure this matches your Font Awesome import */
+    content: "\f078"; /* Unicode for fa-chevron-down (solid style) */
+    font-weight: 900; /* Use 900 for solid icons */
+    
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Position it on the right side */
+    transform: translateY(-50%);
+    
+    pointer-events: none; /* Allows clicks to pass through to the select element */
+    color: var(--text-color-light);
+    font-size: 0.75rem;
+    z-index: 2; /* Ensure it's above the select input */
+}
+
+/* --- 2. Table and Wrapper --- */
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-activity-logs {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-activity-logs th, .table-activity-logs td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.table-activity-logs thead th {
+    background-color: var(--bg-color-main);
+    color: var(--text-color-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.table-activity-logs tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.table-activity-logs tbody strong {
+    font-weight: 700;
+    color: var(--text-color-dark);
+}
+
+.text-right {
+    text-align: right;
+    width: 100%;
+    margin-top: 0.5rem;
+}

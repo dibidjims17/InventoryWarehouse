@@ -1,0 +1,23 @@
+@page
+@model MyRazorApp.Pages.Admin.Users.DeactivateModel
+@{
+    ViewData["Title"] = "Deactivate User";
+}
+
+<div class="container">
+    <header class="page-header">
+        <h2 class="page-title">Deactivate User</h2>
+    </header>
+
+    <div class="alert alert-warning">
+        Are you sure you want to deactivate this user?
+    </div>
+
+    <form method="get">
+        <input type="hidden" name="id" value="@Request.Query["id"]" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Yes, Deactivate</button>
+            <a asp-page="/Admin/Users/Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

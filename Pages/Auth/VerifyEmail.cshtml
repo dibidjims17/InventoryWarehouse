@@ -1,0 +1,70 @@
+@page
+@model MyRazorApp.Pages.Auth.VerifyEmailModel
+@{
+    ViewData["Title"] = "Verify Email";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+}
+
+<main class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Verify Your Email</h1>
+
+            @if (!string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="alert alert-info text-center">@Model.Message</div>
+            }
+
+            <form method="post" class="auth-form">
+                <input type="hidden" asp-for="Email" />
+
+                <div class="form-group">
+                    <label asp-for="Code">Verification Code</label>
+                    <input asp-for="Code" class="form-control" pattern="\d{6}" maxlength="6" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block mt-2">Verify</button>
+            </form>
+
+            <form method="post" asp-page-handler="Resend" id="resendForm" class="auth-links mt-3 text-center">
+                <input type="hidden" asp-for="Email" />
+                <button type="submit" class="btn btn-secondary">Resend Code</button>
+                <span id="countdown" style="margin-left:10px;"></span>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        let cooldown = 0;
+        const serverMessage = "@Model.Message";
+        if (serverMessage.includes("Please wait")) {
+            const match = serverMessage.match(/\d+/);
+            if (match) cooldown = parseInt(match[0]);
+        }
+
+        const resendButton = document.getElementById('resendButton');
+        const countdownSpan = document.getElementById('countdown');
+
+        function startCooldown(seconds) {
+            resendButton.disabled = true;
+            countdownSpan.textContent = ` (${seconds}s)`;
+
+            const interval = setInterval(() => {
+                seconds--;
+                countdownSpan.textContent = ` (${seconds}s)`;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    resendButton.disabled = false;
+                    countdownSpan.textContent = '';
+                }
+            }, 1000);
+        }
+
+        if (cooldown > 0) startCooldown(cooldown);
+    </script>
+}

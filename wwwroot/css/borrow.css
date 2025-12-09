@@ -1,0 +1,131 @@
+/*
+|--------------------------------------------------------------------------
+| BORROW ITEM STYLES (borrow.css)
+|--------------------------------------------------------------------------
+| Specific styles for My Borrowed Items page, focusing on table visualization.
+*/
+
+/* --- Page Header (Reusing inventory.css styles if possible) --- */
+.page-title i {
+    color: var(--primary-color); /* Assuming primary color is defined */
+}
+
+/* --- Message/Error Styling --- */
+.alert {
+    margin: 1rem 0;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.no-items {
+    text-align: center;
+    padding: 50px;
+    background-color: var(--bg-color-content);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color-light);
+    font-size: 1.1rem;
+    margin-top: 20px;
+}
+
+/* --- Borrow Table Styling --- */
+.table-borrows {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Adds significant space between rows */
+}
+
+.table-borrows th {
+    font-weight: 600;
+    color: var(--text-color-dark);
+    padding-bottom: 15px !important;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table-borrows tbody tr {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.table-borrows tbody tr:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.table-borrows td {
+    vertical-align: middle;
+    padding: 15px 12px;
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+/* Rounding corners on the first/last cells of the rows */
+.table-borrows tbody tr td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+.table-borrows tbody tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* --- Row Status Coloring (Subtle background hint) --- */
+.row-approved {
+    border-left: 5px solid #28a745; /* Green */
+}
+.row-pending {
+    border-left: 5px solid #ffc107; /* Yellow */
+}
+.row-rejected {
+    border-left: 5px solid #dc3545; /* Red */
+}
+.row-returned {
+    border-left: 5px solid #6c757d; /* Gray */
+}
+
+/* --- Status Badges --- */
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-returned {
+    background-color: #e2e6ea;
+    color: #383d41;
+}
+
+/* --- Action Button --- */
+.btn-info {
+    /* Custom button style for Request Return */
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+.btn-info:hover {
+    background-color: #057d56;
+    border-color: #057d56;
+}

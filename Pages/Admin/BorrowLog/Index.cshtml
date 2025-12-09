@@ -1,0 +1,138 @@
+@page
+@model MyRazorApp.Pages.Admin.BorrowLog.IndexModel
+@{
+    ViewData["Title"] = "Borrow Logs";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/borrow-log.css" asp-append-version="true" /> 
+    @* REMINDER: Ensure Font Awesome CSS is linked in your main Layout file! *@
+}
+
+<div class="container">
+
+    <header class="page-header">
+        <h2 class="page-title"><i class="fas fa-history"></i> Borrow Logs</h2>
+    </header>
+
+    <form method="get" id="searchForm" class="form-search-inline">
+        <div class="form-group-inline search-input-wrapper">
+            <i class="fas fa-search icon-prefix"></i>
+            <input type="text" name="SearchQuery" value="@Model.SearchQuery" placeholder="Search by User, Item, Code, or Category" class="form-control" />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+            @if (!string.IsNullOrEmpty(Model.SearchQuery))
+            {
+                <button type="button" class="btn btn-secondary" onclick="resetSearchForm()">
+                    <i class="fas fa-times"></i> Reset
+                </button>
+            }
+        </div>
+    </form>
+
+    <div class="spacer-20"></div>
+
+    <div class="table-wrapper card">
+        <table class="table table-striped table-borrows">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Item Name & Code</th>
+                    <th>Qty</th>
+                    <th>Date/Time</th>
+                    <th>Status</th>
+                    <th>Return Conditions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Logs.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="no-data text-center">No borrow logs found.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach(var log in Model.Logs)
+                    {
+                        // Simplify C# logic by setting rowClass and conditionSummary
+                        string rowClass = log.Status?.ToLower() switch
+                        {
+                            "pending" => "row-pending",
+                            "approved" => "row-approved",
+                            "rejected" => "row-rejected",
+                            "returned" => (log.ConditionsOnReturn?.ContainsKey("Lost") == true && log.ConditionsOnReturn["Lost"] > 0) ? "row-lost" :
+                                          (log.ConditionsOnReturn?.ContainsKey("Damaged") == true && log.ConditionsOnReturn["Damaged"] > 0) ? "row-damaged" : "row-returned",
+                            _ => "",
+                        };
+                        
+                        string conditionSummary = "-";
+                        if (log.ConditionsOnReturn != null && log.ConditionsOnReturn.Count > 0)
+                        {
+                            conditionSummary = string.Join(", ", log.ConditionsOnReturn.Select(kv => $"{kv.Key}: {kv.Value}"));
+                        }
+
+                        <tr class="@rowClass">
+                            <td>@log.Username</td>
+                            <td>
+                                <strong>@log.ItemName</strong><br />
+                                <small class="text-muted">Code: @log.ItemCode</small>
+                            </td>
+                            <td>@log.Quantity</td>
+                            <td>@log.RequestedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                            
+                            <td>
+                                <span class="badge badge-status-@log.Status?.ToLower()">
+                                    <i class="fas @(log.Status?.ToLower() switch { "pending" => "fa-clock", "approved" => "fa-handshake", "rejected" => "fa-times-circle", "returned" => "fa-check-double", _ => "fa-info-circle"})"></i>
+                                    @log.Status
+                                </span>
+                            </td>
+                            
+                            <td class="text-wrap">
+                                <small>@conditionSummary</small>
+                            </td>
+                            
+                            <td class="table-actions">
+                                @if(log.Status == "Pending")
+                                {
+                                    <a class="btn btn-icon btn-success" asp-page="/Admin/BorrowLog/Approve" asp-route-id="@log.Id" title="Approve Request">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a class="btn btn-icon btn-danger" asp-page="/Admin/BorrowLog/Reject" asp-route-id="@log.Id" title="Reject Request">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+                                else if(log.ReturnRequested && log.Status != "Returned")
+                                {
+                                    <a class="btn btn-icon btn-primary" asp-page="/Admin/BorrowLog/ApproveReturn" asp-route-id="@log.Id" title="Approve Return">
+                                        <i class="fas fa-undo-alt"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span> 
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        function resetSearchForm() {
+            document.getElementById('searchForm').querySelector('input[name="SearchQuery"]').value = '';
+            document.getElementById('searchForm').submit();
+        }
+    </script>
+}

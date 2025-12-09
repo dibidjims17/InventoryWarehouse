@@ -1,0 +1,267 @@
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD STYLES (dashboard.css)
+|--------------------------------------------------------------------------
+| Styles for the main dashboard layout, metric cards, and widgets.
+*/
+
+/* --- 1. Page Header --- */
+
+.page-header-section {
+    margin-bottom: 30px;
+}
+
+.page-header-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-color-dark);
+    margin-bottom: 5px;
+}
+
+.page-header-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-color-light);
+}
+
+.dashboard-divider {
+    margin: 40px 0;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+}
+
+
+/* --- 2. Metric Cards Layout --- */
+
+.dashboard-cards {
+    display: grid;
+    /* 3 columns on desktop, 1 on mobile */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px;
+}
+
+.card-metric {
+    padding: 20px;
+    background-color: var(--bg-color-content);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-metric:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 15px;
+    font-size: 1.1rem;
+    color: #fff; /* Default icon color */
+}
+
+.card-icon-wrapper i {
+    color: var(--primary-color);
+}
+
+/* Color definitions for Admin Cards */
+.card-admin-inventory .card-icon-wrapper { background-color: #e6f1ff; } 
+.card-admin-inventory .card-icon-wrapper i { color: #007bff; } /* blue */
+
+.card-admin-users .card-icon-wrapper { background-color: #e7ffee; } 
+.card-admin-users .card-icon-wrapper i { color: #28a745; } /* green */
+
+.card-admin-log .card-icon-wrapper { background-color: #fff3e6; } 
+.card-admin-log .card-icon-wrapper i { color: #ffc107; } /* yellow/warning */
+
+/* Color definitions for Client Cards */
+.card-client-borrowed .card-icon-wrapper { background-color: #e5f7ff; } 
+.card-client-borrowed .card-icon-wrapper i { color: #17a2b8; } /* cyan/info */
+
+.card-client-available .card-icon-wrapper { background-color: #e9fbe5; } 
+.card-client-available .card-icon-wrapper i { color: #20c997; } /* teal */
+
+
+.card-metric-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+    margin: 10px 0 5px 0;
+}
+
+.card-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-color-light);
+    margin-bottom: 15px;
+}
+
+.card-metric .btn {
+    width: 100%;
+    padding: 8px;
+    font-weight: 600;
+}
+
+
+/* --- 3. Dashboard Body Layout (Main content area for Admin) --- */
+
+.dashboard-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dashboard-chart-lg {
+    flex: 3; /* Takes up 60-70% of the width */
+    min-height: 350px;
+}
+
+.dashboard-sidebar {
+    flex: 2; /* Takes up 30-40% of the width */
+    min-height: 350px;
+}
+
+.dashboard-activity {
+    margin-top: 20px;
+}
+
+/* Card General Styling */
+.card {
+    background-color: var(--bg-color-content);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color-dark);
+}
+
+.card .card-icon-wrapper-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 0.9rem;
+    background-color: #eee;
+    color: var(--text-color-dark);
+}
+
+
+/* --- 4. Trends Table & Activity Table --- */
+
+.chart-placeholder {
+    margin-top: 15px;
+}
+
+/* Ensure these essential table styles are in your CSS */
+.table {
+    width: 100%; /* Important: Makes the table take full width of its container */
+    border-collapse: collapse; /* Removes spacing between borders of adjacent cells */
+    table-layout: fixed; /* Optional: Helps stabilize column widths if needed */
+}
+
+/* Styles for header and data cells */
+.table th, 
+.table td {
+    padding: 0.75rem; /* Adds necessary spacing */
+    vertical-align: top; /* Ensures text aligns at the top */
+    border-top: 1px solid var(--border-color); /* Adds visible row separation */
+}
+
+/* Specific styling for the Activity table columns */
+.table-activity th, 
+.table-activity td {
+    /* Define widths to ensure consistent column separation */
+    width: 20%; 
+}
+
+/* Center alignment for the Quantity column */
+.text-center {
+    text-align: center !important;
+}
+
+.table-trends th:last-child,
+.table-trends td:last-child {
+    text-align: right;
+}
+
+.table-activity th, .table-activity td {
+    vertical-align: middle;
+}
+
+/* Status List (Sidebar) */
+.status-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+.status-list li {
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0f0f0;
+    font-size: 1rem;
+    color: var(--text-color-dark);
+}
+
+.status-list li:last-child {
+    border-bottom: none;
+}
+
+.status-list i {
+    font-size: 0.7rem;
+    margin-right: 10px;
+}
+
+.status-overdue i { color: #dc3545; } /* Danger/Red */
+.status-available i { color: #28a745; } /* Success/Green */
+.status-pending i { color: #ffc107; } /* Warning/Yellow */
+
+/* Status Badges (Reusing logic from BorrowLog) */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.status-approved { background-color: #d4edda; color: #155724; }
+.status-pending { background-color: #fff3cd; color: #856404; }
+.status-returned { background-color: #e2e6ea; color: #383d41; }
+
+/* --- 5. Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .dashboard-row {
+        flex-direction: column;
+    }
+    .dashboard-chart-lg,
+    .dashboard-sidebar {
+        flex: auto;
+        min-height: auto;
+    }
+}
+@media (max-width: 576px) {
+    .page-header-title {
+        font-size: 1.6rem;
+    }
+}

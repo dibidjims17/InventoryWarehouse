@@ -1,0 +1,129 @@
+@page
+@model MyRazorApp.Pages.Admin.Users.IndexModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user-management.css" asp-append-version="true" />
+    @* REMINDER: Ensure Font Awesome CSS is linked in your main Layout file! *@
+}
+
+<div class="container">
+
+    <header class="page-header page-header-spaced">
+        <h2 class="page-title"><i class="fas fa-users"></i> User Accounts</h2>
+    </header>
+
+    <form method="get" id="searchForm" class="form-search-inline">
+        <div class="form-group-inline search-input-wrapper">
+            <i class="fas fa-user-tag icon-prefix"></i>
+            <input asp-for="Search" class="form-control" placeholder="Search by Username, Email, or Role" />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+            @if (!string.IsNullOrEmpty(Model.Search))
+            {
+                <button type="button" class="btn btn-secondary" onclick="resetSearchForm()">
+                    <i class="fas fa-times"></i> Reset
+                </button>
+            }
+        </div>
+    </form>
+    
+    <div class="spacer-20"></div>
+
+    <div class="table-wrapper card">
+        <table class="table table-striped table-users">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Last Activity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Users.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="no-data text-center">No users found.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td><strong>@user.Username</strong></td>
+                            <td>@user.Email</td>
+                            <td><span class="badge badge-role-@user.Role.ToLower()">@user.Role</span></td>
+                            <td>
+                                @{
+                                    var statusLower = user.Status?.ToLower() ?? "active";
+                                }
+                                @if (statusLower == "deactivated" || statusLower == "inactive")
+                                {
+                                    <span class="badge badge-deactivated"><i class="fas fa-ban"></i> Inactive</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-active"><i class="fas fa-check-circle"></i> Active</span>
+                                }
+                            </td>
+                            <td>
+                                @(user.LastLogin != default(DateTime) ? user.LastLogin.ToString("yyyy-MM-dd HH:mm") : "N/A")
+                            </td>
+                            <td class="table-actions">
+                                @if (user.Username != Model.CurrentUsername)
+                                {
+                                    <a asp-page="/Admin/Users/Edit" asp-route-id="@user.UserId" class="btn btn-icon btn-edit" title="Edit User">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    @if (statusLower == "deactivated" || statusLower == "inactive")
+                                    {
+                                        <a asp-page="/Admin/Users/Activate" asp-route-id="@user.UserId"
+                                           class="btn btn-icon btn-success"
+                                           title="Activate Account"
+                                           onclick="return confirm('Are you sure you want to activate @user.Username?');">
+                                            <i class="fas fa-toggle-on"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Admin/Users/Deactivate" asp-route-id="@user.UserId"
+                                           class="btn btn-icon btn-danger"
+                                           title="Deactivate Account"
+                                           onclick="return confirm('Are you sure you want to deactivate @user.Username?');">
+                                            <i class="fas fa-toggle-off"></i>
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted"><i class="fas fa-user-lock"></i> (Self)</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function resetSearchForm() {
+            document.getElementById('searchForm').querySelector('[name="Search"]').value = '';
+            document.getElementById('searchForm').submit();
+        }
+    </script>
+}

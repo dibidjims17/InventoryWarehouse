@@ -1,0 +1,87 @@
+@page
+@model MyRazorApp.Pages.Admin.Reports.ReportsModel
+@{
+    ViewData["Title"] = "Activity Reports";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/activity-reports.css" asp-append-version="true" />
+    @* REMINDER: Ensure Font Awesome CSS is linked in your main Layout file! *@
+}
+
+<div class="container">
+
+    <header class="page-header">
+        <h2 class="page-title"><i class="fas fa-file-alt"></i> Activity Reports</h2>
+        <p class="page-subtitle">View system actions and filter logs by activity type.</p>
+    </header>
+
+    <form method="get" id="searchForm" class="form-filter-inline">
+        <div class="form-group-inline filter-select-wrapper">
+            <i class="fas fa-filter icon-prefix"></i>
+            <select asp-for="ReportTypeFilter" class="form-control" onchange="this.form.submit()">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.ReportTypeFilter) ? "selected" : null)">All Activity Types</option>
+                
+                @foreach (var type in Model.ReportTypes)
+                {
+                    <option value="@type" selected="@(Model.ReportTypeFilter == type ? "selected" : null)">
+                        @type
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-actions">
+            @if (!string.IsNullOrEmpty(Model.ReportTypeFilter))
+            {
+                <button type="button" class="btn btn-secondary" onclick="resetSearchForm()">
+                    <i class="fas fa-times"></i> Reset Filter
+                </button>
+            }
+        </div>
+    </form>
+
+    <div class="spacer-20"></div>
+    
+    @if (!Model.Reports.Any())
+    {
+        <p class="no-items">No activity reports found for the selected filter.</p>
+    }
+    else
+    {
+        <div class="table-wrapper card">
+            <table class="table table-striped table-activity-logs">
+                <thead>
+                    <tr>
+                        <th style="width: 15%">Date</th>
+                        <th style="width: 10%">Time</th>
+                        <th style="width: 20%">Actor</th>
+                        <th>Action Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var report in Model.Reports)
+                    {
+                        <tr>
+                            <td>@Model.FormatDate(report.Timestamp)</td>
+                            <td>@Model.FormatTime(report.Timestamp)</td>
+                            <td><strong>@report.PerformedBy</strong></td>
+                            <td>@report.Details</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <p class="text-muted text-right">Showing @Model.Reports.Count() activities.</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function resetSearchForm() {
+            document.getElementById('searchForm').querySelector('[name="ReportTypeFilter"]').value = '';
+            document.getElementById('searchForm').submit();
+        }
+    </script>
+}

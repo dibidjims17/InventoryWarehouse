@@ -1,0 +1,49 @@
+@page
+@model MyRazorApp.Pages.Auth.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<main class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Login</h1>
+
+            <!-- Error / Info Messages -->
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger text-center">@Model.ErrorMessage</div>
+            }
+
+            @if (Request.Query["error"] == "deactivated")
+            {
+                <div class="alert alert-danger text-center">
+                    Your account has been deactivated by the admin. Please contact support.
+                </div>
+            }
+
+            <form method="post" class="auth-form">
+                <div class="form-group">
+                    <input type="text" asp-for="LoginInput" class="form-control" placeholder="Username or Email" required />
+                </div>
+
+                <div class="form-group">
+                    <input type="password" asp-for="Password" class="form-control" placeholder="Password" required />
+                </div>
+
+                <div class="form-group d-flex align-items-center justify-content-between">
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="RememberMe" class="form-check-input" id="rememberMe" />
+                        <label class="form-check-label" for="rememberMe">Remember Me</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+
+            <div class="auth-links text-center mt-3">
+                <p>Don't have an account? <a href="/Auth/Register">Register here</a></p>
+                <p><a href="/Auth/ForgotPassword">Forgot Password?</a></p>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,173 @@
+/*
+|--------------------------------------------------------------------------
+| DATA REPORT DASHBOARD STYLES (datareport.css)
+|--------------------------------------------------------------------------
+| Custom styling for the data visualization and report dashboard layout.
+*/
+
+/*
+|--------------------------------------------------------------------------
+| DATA REPORT DASHBOARD STYLES (datareport.css)
+|--------------------------------------------------------------------------
+*/
+
+/* ... (Existing CSS styles for .datareport-page, .datareport-card, .card-header, etc.) ... */
+
+/* --- 4. Detail Tables and Scrolling --- */
+
+/* Add max height and scroll for detail tables */
+.table-scroll-wrapper {
+    /* Maximum height before the wrapper starts scrolling vertically */
+    max-height: 250px; 
+    overflow-y: auto;
+    /* Optional: Add slight border/shadow to indicate scrolling area */
+    border: 1px solid var(--border-color-light);
+    border-radius: 0.25rem;
+}
+
+.datareport-table {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.datareport-table th {
+    font-weight: 600;
+    padding: 0.4rem 0.5rem;
+    /* Crucial: Keeps header visible when scrolling is active */
+    position: sticky; 
+    top: 0; 
+    background-color: var(--bg-color-main);
+    z-index: 10;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05); /* Slight shadow to separate header */
+}
+
+.datareport-table td {
+    padding: 0.3rem 0.5rem;
+    text-align: center;
+}
+
+/* ... (Existing alignment CSS) ... */
+
+/* --- 1. Card and Layout Structure --- */
+
+.datareport-page .page-title i {
+    margin-right: 10px;
+    color: var(--color-primary); /* Assuming a primary color variable */
+}
+
+.datareport-card {
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    overflow: hidden; /* Ensures child components don't bleed */
+}
+
+.datareport-card .card-header {
+    padding: 0.75rem 1.25rem;
+    background-color: var(--bg-color-main); /* Light background for header */
+    border-bottom: 1px solid var(--border-color);
+}
+
+.datareport-card .card-title {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.datareport-card .card-body {
+    padding: 1rem;
+}
+
+/* --- 2. Chart and Sidebar Containers --- */
+
+/* Ensure the chart canvas has a fixed height within the container for Chart.js to render well */
+.chart-container {
+    height: 250px; /* Fixed height for the chart area */
+    min-width: 50%; /* Make sure chart takes up at least half the width on desktop */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Make the canvas take up 100% of the chart container height/width */
+.chart-container canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.chart-sidebar {
+    padding-left: 1rem;
+    border-left: 1px solid var(--border-color-light);
+}
+
+/* Remove border on mobile view when stacked */
+@media (max-width: 767px) {
+    .datareport-card .card-body {
+        flex-direction: column !important;
+    }
+    .chart-sidebar {
+        border-left: none;
+        padding-left: 0;
+        margin-left: 0 !important;
+        margin-top: 1rem !important;
+    }
+}
+
+
+/* --- 3. Filter Controls and Badges --- */
+
+.chart-filter-controls .form-select-sm {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    height: calc(1.5em + 0.5rem + 2px);
+}
+
+.badge-list {
+    margin-bottom: 0.5rem;
+}
+
+/* Define colors for the status badges */
+.badge-status-summary {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-approved, .status-returned { background-color: #10b981; color: #fff; } /* Green/Success */
+.status-pending { background-color: #f59e0b; color: #fff; } /* Amber/Warning */
+.status-rejected, .status-lost { background-color: #ef4444; color: #fff; } /* Red/Danger */
+.status-damaged { background-color: #fcd34d; color: #1f2937; } /* Yellow/Light Warning */
+.status-missing { background-color: #6366f1; color: #fff; } /* Indigo/Info */
+
+
+/* --- 4. Detail Tables --- */
+
+.datareport-table {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+
+.datareport-table th {
+    font-weight: 600;
+    padding: 0.4rem 0.5rem;
+}
+
+.datareport-table td {
+    padding: 0.3rem 0.5rem;
+    text-align: center; /* Center all cell content */
+}
+
+/* Specific alignment for Qty column in Top Borrowed table */
+#fullListTable th:last-child,
+#fullListTable td:last-child {
+    text-align: right !important;
+}
+
+/* Specific alignment for Qty column in other detail tables */
+#borrowStatusTable th:nth-child(3),
+#borrowStatusTable td:nth-child(3),
+#returnRequestTable th:nth-child(3),
+#returnRequestTable td:nth-child(3),
+#returnConditionTable th:nth-child(3),
+#returnConditionTable td:nth-child(3) {
+    text-align: right !important;
+}

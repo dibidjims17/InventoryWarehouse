@@ -1,0 +1,644 @@
+/* =========================
+   GLOBAL SETTINGS
+========================= */
+:root {
+  --primary-color: #4A90E2;
+  --primary-hover: #357ABD;
+  --secondary-color: #F4F6FA;
+  --text-color: #2C3E50;
+  --card-bg: #FFFFFF;
+  --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  --border-radius: 12px;
+  --spacing: 20px;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --bottom-padding: 60px;
+}
+
+.row-pending { background-color: #fff8e6; }
+.row-approved { background-color: #e6ffed; }
+.row-rejected { background-color: #ffe6e6; }
+.row-returned { background-color: #f0f0f0; }
+.row-lost { background-color: #ffe6e6; }
+.row-damaged { background-color: #fff4e6; }
+
+/* =========================
+   Search / Filter Form (Unified)
+========================= */
+.form-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.input-select, .input-search {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   FORM BUTTONS FIX (Search / Reset)
+========================= */
+.btn btn-secondary,
+.form-actions .btn {
+  padding: 8px 12px;       /* Matches input height */
+  font-size: 0.95rem;      /* Same as input text */
+  line-height: 1.5;        /* Align text vertically */
+  border-radius: 6px;      /* Same as inputs */
+  height: 38px;            /* Ensures consistent height with input */
+  display: inline-flex;
+  align-items: center;     /* Vertically center text */
+  justify-content: center; /* Center text horizontally */
+}
+
+/* =========================
+   RESET BUTTON FIX
+========================= */
+.form-search .btn-secondary {
+  padding: 6px 12px;       /* Reduce vertical padding */
+  font-size: 0.95rem;      /* Match input text */
+  line-height: 1.5;        /* Vertically center text */
+  height: 38px;            /* Same height as select */
+  border-radius: 6px;      /* Match select's border-radius */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optional: add a small margin so it doesn’t touch the select */
+.form-search .btn-secondary {
+  margin-left: 8px;
+}
+
+.btn-primary { 
+  background-color: #007bff;  
+}
+.btn-primary:hover { 
+  background-color: #0056b3; 
+}
+.btn-secondary { 
+  background-color: #6c757d; 
+  color: #fff; 
+}
+.btn-secondary:hover { 
+  background-color: #5a6268; 
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-search {
+      flex-direction: column;
+  }
+  .form-actions {
+      width: 100%;
+      flex-direction: row;
+      gap: 10px;
+  }
+  .form-actions .btn {
+      flex: 1;
+      text-align: center;
+  }
+  .btn btn-secondary,
+  .form-actions .btn {
+      width: 100%;       
+      padding: 8px 0;
+  }
+}
+
+/* =========================
+   RESET
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-bottom: var(--bottom-padding);
+
+  /* Background image */
+  background-image: url('/uploads/background/bg.png');
+  background-size: cover;        /* Make the image cover the viewport */
+  background-position: center;   /* Center the image */
+  background-repeat: no-repeat;  /* Don’t tile */
+  background-attachment: scroll; /* Background scrolls with the page */
+}
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-color);
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; }
+
+p {
+  margin-bottom: 1em;
+  color: #555;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing);
+  padding-bottom: calc(var(--spacing) + var(--bottom-padding));
+}
+
+/* =========================
+   CARDS
+========================= */
+.card, .dashboard-cards .card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  border-color: var(--primary-color);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #555;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+/* Dashboard cards container: horizontal on desktop, vertical on mobile */
+.dashboard-cards {
+  display: flex;
+  gap: var(--spacing, 20px);
+  flex-wrap: wrap;
+  align-items: stretch;      /* makes cards equal height if needed */
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+/* Individual card flex rules */
+.dashboard-cards .card {
+  flex: 1 1 280px;   /* grow, shrink, min width 280px */
+  min-width: 220px;  /* fallback minimum */
+  max-width: 33%;    /* optional: limits how wide each card can grow (desktop) */
+  box-sizing: border-box;
+}
+
+/* If you prefer exact 3-per-row on wide screens, use:
+   .dashboard-cards .card { flex: 0 1 calc(33.333% -  var(--spacing,20px)); }
+   but the above flexible approach will wrap gracefully.
+*/
+
+/* Mobile: stack vertically */
+@media (max-width: 768px) {
+  .dashboard-cards {
+    flex-direction: column;
+  }
+
+  .dashboard-cards .card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+}
+
+/* Optional: small-screen tablet tweak (between 769 - 992px) show two columns */
+@media (min-width: 769px) and (max-width: 992px) {
+  .dashboard-cards .card {
+    flex: 1 1 calc(50% - var(--spacing,20px));
+    max-width: calc(50% - var(--spacing,20px));
+  }
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+/* Base button */
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  color: #fff !important;    /* always white text */
+  border: none;
+}
+
+/* Primary button */
+.btn-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover) !important; 
+  color: #fff !important;
+}
+
+/* Secondary */
+.btn-secondary {
+  background-color: #6c757d !important;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268 !important;
+}
+
+/* If your dashboard uses these links as buttons */
+.card .btn {
+  background-color: #4A90E2;
+}
+.card .btn:hover {
+  background-color: #357ABD !important;
+  color: #fff !important;
+}
+
+.btn-success { background-color: #28a745; }
+.btn-success:hover { background-color: #218838; }
+.btn-danger { background-color: #dc3545; }
+.btn-danger:hover { background-color: #c82333; }
+.btn-secondary { background-color: #6c757d; }
+.btn-secondary:hover { background-color: #5a6268; }
+
+/* =========================
+   BUTTONS SPECIFIC TO BORROW ITEMS
+========================= */
+.table-borrows .btn {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.table-borrows .btn-warning {
+    background-color: #f0ad4e;
+    color: #fff;
+}
+
+.table-borrows .btn-warning:hover {
+    background-color: #ec971f;
+    transform: translateY(-1px);
+}
+
+.table-borrows .btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.table-borrows .btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+.table-borrows .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.table-borrows .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .table-borrows .btn {
+        width: 100%;
+        text-align: center;
+        padding: 8px 0;
+    }
+}
+
+/* =========================
+   FORMS
+========================= */
+input, select, textarea, .form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--border-radius);
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus, .form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74,144,226,0.25);
+  outline: none;
+}
+
+/* =========================
+   TABLES
+========================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--spacing);
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background-color: #F7F9FC;
+}
+
+/* =========================
+   ALERTS / NOTIFICATIONS
+========================= */
+.alert {
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+}
+
+/* =========================
+   DROPDOWN MENU
+========================= */
+.input-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><polygon points='0,0 10,0 5,5' fill='%23666'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74,144,226,0.25);
+  outline: none;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 768px) {
+  h1 { font-size: 1.5rem; }
+  .btn { width: 100%; text-align: center; }
+
+  /* Users page responsive cards */
+  .table-users thead { display: none; }
+  .table-users tbody tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 15px;
+    background-color: var(--card-bg);
+  }
+  .table-users tbody tr td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  .table-users tbody tr td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+    flex: 1;
+  }
+  .table-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  .table-actions .btn { flex: 1; text-align: center; }
+}
+
+/* =========================
+   AUTH PAGES (Login / Register / Forgot / Verify)
+========================= */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  align-items: center;
+  min-height: 40vh;
+  background-color: var(--secondary-color);
+  padding: var(--spacing);
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card {
+  background-color: var(--card-bg);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.auth-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.auth-form .form-group {
+  margin-bottom: 15px;
+}
+
+.auth-form .btn-block {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.alert {
+  margin-bottom: 20px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Mobile / responsive adjustments */
+@media (max-width: 768px) {
+  .auth-card {
+      padding: 20px;
+  }
+
+  .auth-title {
+      font-size: 1.5rem;
+  }
+
+  .auth-form .btn-block {
+      padding: 12px 0;
+  }
+}
+
+/* =========================
+   AUTH FORMS — improved responsive alignment
+   ========================= */
+
+/* Desktop / tablet: checkbox+label left, button right */
+.auth-form .form-group.d-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+/* Checkbox + label stay inline and vertically centered */
+.auth-form .form-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;   /* prevents "Remember" / "Me" from breaking */
+  margin: 0;             /* remove unexpected margins */
+}
+
+/* Make the native checkbox predictable size and alignment */
+.auth-form .form-check-input {
+  width: 18px;
+  height: 18px;
+  margin: 0;             /* remove bootstrap default margins */
+  flex: 0 0 18px;
+  vertical-align: middle;
+}
+
+/* Label baseline and spacing */
+.auth-form .form-check-label {
+  margin: 0;
+  line-height: 1;
+  font-size: 0.95rem;
+  display: inline-block;
+}
+
+/* Ensure button keeps reasonable size on smaller viewports */
+.auth-form .form-group.d-flex button {
+  flex: 0 0 auto;
+  min-width: 110px;
+}
+
+/* =========================
+   FIX AUTH BUTTON HOVER
+========================= */
+.auth-form .btn-primary,
+.auth-card .btn-primary {
+    background-color: #4A90E2 !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.auth-form .btn-primary:hover,
+.auth-card .btn-primary:hover {
+    background-color: #357ABD !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+/* -------------------------
+   MOBILE: stack cleanly
+   ------------------------- */
+@media (max-width: 576px) {
+  /* allow wrapping but keep checkbox+label together */
+  .auth-form .form-group.d-flex {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;   /* full width children */
+    gap: 8px;
+  }
+
+  /* Keep checkbox + label on a single row and aligned left */
+  .auth-form .form-check {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  /* Make the checkbox/label block take only the height it needs */
+  .auth-form .form-check-input {
+    margin-right: 8px;
+  }
+
+  /* Make login button full width and visually separated */
+  .auth-form .form-group.d-flex button {
+    width: 100%;
+    align-self: stretch;
+    padding: 0.5rem 0.75rem;
+    margin-top: 4px;
+  }
+}
+
+
+
+
+

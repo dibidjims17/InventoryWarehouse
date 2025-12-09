@@ -1,0 +1,154 @@
+/*
+|--------------------------------------------------------------------------
+| USER MANAGEMENT STYLES (user-management.css)
+|--------------------------------------------------------------------------
+| Styles for the User Index table view and related elements.
+*/
+
+/* --- 1. General Layout and Search --- */
+
+.page-header-spaced {
+    margin-bottom: 1.5rem;
+}
+
+.form-search-inline {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--bg-color-content);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-search-inline .form-group-inline {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Use the icon-prefix and form-control styles from inventory-gallery if available, otherwise define here */
+.form-search-inline .icon-prefix {
+    position: absolute;
+    left: 10px;
+    color: var(--text-color-light);
+}
+
+.form-search-inline .form-control {
+    width: 100%;
+    padding-left: 35px; /* Space for icon */
+}
+
+/* --- 2. Table and Wrapper --- */
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-users {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-users th, .table-users td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.table-users thead th {
+    background-color: var(--bg-color-main); /* Light background for header */
+    color: var(--text-color-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.table-users tbody tr:hover {
+    background-color: #f9fafb; /* Light hover effect */
+}
+
+/* --- 3. Badges (Status and Role) --- */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3em 0.7em;
+    border-radius: 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.badge i {
+    margin-right: 5px;
+}
+
+/* Status Badges */
+.badge-active {
+    background-color: #d1fae5; /* Light green */
+    color: #059669; /* Dark green text */
+}
+
+.badge-deactivated {
+    background-color: #fee2e2; /* Light red */
+    color: #ef4444; /* Dark red text */
+}
+
+/* Role Badges (example colors) */
+.badge-role-admin {
+    background-color: #dbeafe; /* Light blue */
+    color: #2563eb; /* Blue text */
+}
+
+.badge-role-user {
+    background-color: #fef3c7; /* Light yellow */
+    color: #d97706; /* Yellow text */
+}
+
+/* --- 4. Table Actions --- */
+
+.table-actions {
+    white-space: nowrap; /* Keep actions on one line */
+    text-align: right;
+}
+
+.table-actions .btn-icon {
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.3rem;
+    font-size: 0.9rem;
+    margin-left: 5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.table-actions .btn-icon i {
+    margin: 0;
+}
+
+/* Specific Action Colors */
+.table-actions .btn-edit {
+    background-color: #fef9c3; /* Light yellow for edit */
+    color: #a16207;
+}
+
+.table-actions .btn-success {
+    background-color: #d1fae5;
+    color: #059669; /* Green for Activate */
+}
+
+.table-actions .btn-danger {
+    background-color: #fee2e2;
+    color: #ef4444; /* Red for Deactivate */
+}
+
+.table-actions .text-muted {
+    font-size: 0.9em;
+    color: var(--text-color-light) !important;
+}

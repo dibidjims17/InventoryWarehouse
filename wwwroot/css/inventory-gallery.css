@@ -1,0 +1,284 @@
+/*
+|--------------------------------------------------------------------------
+| INVENTORY GALLERY & CARD STYLES (inventory-gallery.css)
+|--------------------------------------------------------------------------
+| Styles for the visual, card-based inventory view.
+*/
+
+/* --- NEW: Search and Filter Form Styles --- */
+
+.form-search-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 1.5rem;
+    background-color: var(--bg-color-content);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.input-group-field {
+    display: flex;
+    flex: 3; /* Allows input fields to take up most of the space */
+    gap: 15px;
+}
+
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+.icon-prefix {
+    position: absolute;
+    left: 1rem;
+    color: var(--text-color-light);
+    font-size: 0.9rem;
+    pointer-events: none; /* Allows clicks to pass through to the input */
+}
+
+/* Reusing the global form-control style but adding padding for the icon */
+.form-search-filter .form-control {
+    width: 100%;
+    padding-left: 2.5rem; /* Space for the icon */
+}
+
+/* Styles for the select dropdown */
+.form-search-filter select.form-control {
+    appearance: none; /* Hide default dropdown arrow */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.form-actions .btn {
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* --- Results Title and No Items --- */
+
+.items-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color-dark);
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.no-items {
+    font-size: 1.1rem;
+    color: var(--text-color-light);
+    padding: 2rem;
+    border: 1px dashed var(--border-color);
+    border-radius: 0.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.no-results {
+    color: var(--danger-color);
+}
+
+/* Styling for a single, full-width button action bar */
+.card-actions-single {
+    display: block;
+    text-align: center;
+    padding: 0.75rem 1rem;
+}
+
+.card-actions-single .btn-info {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--accent-color); /* Use your primary accent color */
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.card-actions-single .btn-info:hover {
+    filter: brightness(1.1);
+}
+
+/* --- Responsive Adjustments for Search Form --- */
+
+@media (max-width: 900px) {
+    .form-search-filter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-group-field {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-actions {
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+}
+
+/* --- 1. Page Header & Actions --- */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color-dark);
+    margin: 0;
+}
+
+.header-actions .btn-primary {
+    /* Inherits button styling from site.css */
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+}
+
+/* --- 2. Inventory Grid Layout --- */
+
+.inventory-grid {
+    display: grid;
+    /* Responsive grid: 250px minimum card width */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* --- 3. Individual Inventory Card Styling --- */
+
+.inventory-card {
+    background-color: var(--bg-color-content);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden; /* Contains image overflow */
+    display: flex;
+    flex-direction: column;
+}
+
+.inventory-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Section */
+.card-image {
+    width: 100%;
+    height: 180px; /* Fixed height for consistent look */
+    overflow: hidden;
+    background-color: var(--bg-color-main); /* Placeholder color if image fails */
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image covers the area without distortion */
+    transition: transform 0.3s;
+}
+
+.inventory-card:hover .card-image img {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+/* Content Section */
+.card-content {
+    padding: 1rem;
+    flex-grow: 1; /* Pushes actions to the bottom */
+}
+
+.card-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--primary-color); /* Highlight name with dark primary color */
+    margin-bottom: 0.5rem;
+}
+
+.card-content p {
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin-bottom: 0.25rem;
+}
+
+.card-content p.quantity {
+    font-weight: 600;
+    color: var(--text-color-dark); /* Highlight quantity slightly */
+}
+
+/* Action Bar at the Bottom */
+.card-actions {
+    display: flex;
+    justify-content: flex-end; /* Align actions to the right */
+    padding: 0.75rem 1rem;
+    gap: 10px;
+    border-top: 1px solid var(--border-color);
+    background-color: #fcfcfc; /* Slightly off-white background for actions */
+}
+
+.card-actions .btn {
+    border: none; /* Action buttons don't need borders */
+    padding: 0.5rem;
+    border-radius: 50%; /* Circular button for icons */
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+/* Specific Action Button Colors */
+.card-actions .btn-edit {
+    background-color: #e0f2fe; /* Light blue */
+    color: var(--accent-color);
+}
+
+.card-actions .btn-edit:hover {
+    background-color: #bae6fd;
+}
+
+.card-actions .btn-danger {
+    background-color: #fee2e2; /* Light red */
+    color: var(--danger-color);
+}
+
+.card-actions .btn-danger:hover {
+    background-color: #fca5a5;
+}
+
+
+/* --- 4. Responsive Adjustments --- */
+
+@media (max-width: 600px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .page-title {
+        margin-bottom: 1rem;
+    }
+    .inventory-grid {
+        grid-template-columns: 1fr; /* Stack cards vertically on mobile */
+    }
+}

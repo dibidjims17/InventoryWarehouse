@@ -1,0 +1,67 @@
+@page
+@model MyRazorApp.Pages.Client.ClientItems.BorrowItemModel
+@{
+    ViewData["Title"] = "Borrow Item";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-forms.css" asp-append-version="true" />
+}
+
+<div class="container">
+    
+    <header class="page-header">
+        <h2 class="page-title"><i class="fas fa-hand-holding"></i> Request Item: @Model.ItemToBorrow?.Name</h2>
+    </header>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            @Html.Raw(Model.SuccessMessage)
+            <br />
+            Redirecting in 
+            <span id="countdown" class="countdown" 
+                  data-seconds="3" 
+                  data-redirect="/Client/ClientItems/Index"></span> 
+            seconds...
+        </div>
+    }
+
+    @if (Model.ItemToBorrow != null && string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="item-details-card">
+            <p><strong>Category:</strong> @Model.ItemToBorrow.Category</p>
+            <p><strong>Available Quantity:</strong> <span class="quantity-available">@Model.ItemToBorrow.Quantity</span></p>
+        </div>
+
+        <form method="post" class="form">
+            <input type="hidden" asp-for="ItemId" value="@Model.ItemToBorrow.Id" />
+
+            <div class="form-group">
+                <label asp-for="Quantity">Quantity to Borrow:</label>
+                <input type="number" asp-for="Quantity" min="1" max="@Model.ItemToBorrow.Quantity" value="1" class="input-text" required />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-clipboard-list"></i> Request Borrow
+                </button>
+                <a asp-page="/Client/ClientItems/Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/countdown.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

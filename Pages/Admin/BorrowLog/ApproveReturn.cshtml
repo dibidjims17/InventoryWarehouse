@@ -1,0 +1,111 @@
+@page
+@model MyRazorApp.Pages.Admin.BorrowLog.ApproveReturnModel
+@{
+    ViewData["Title"] = "Approve Return";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-forms.css" asp-append-version="true" />
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            @Html.Raw(Model.SuccessMessage)
+            <br />
+            Redirecting in 
+            <span id="countdown" class="countdown" 
+                  data-seconds="3" 
+                  data-redirect="/Admin/BorrowLog/Index"></span>  
+            seconds...
+        </div>
+    }
+
+<div class="container">
+    
+    <header class="page-header">
+        <h2 class="page-title"><i class="fas fa-check-circle"></i> Approve Return: @Model.Borrow.ItemName</h2>
+    </header>
+    
+    <div class="return-details-card">
+        <p><strong>User:</strong> @Model.Borrow.Username</p>
+        <p><strong>Quantity Borrowed:</strong> @Model.Borrow.Quantity</p>
+    </div>
+    
+    <form method="post" id="approveReturnForm" class="form-narrow">
+        
+        <h3 class="form-subtitle">Returned Item Condition Check</h3>
+        
+        <table class="table table-condition-entry">
+            <thead>
+                <tr>
+                    <th>Condition</th>
+                    <th class="text-center">Quantity to Return</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var kv in Model.Conditions)
+                {
+                    <tr>
+                        <td>
+                            <i class="fas fa-tag"></i> @kv.Key
+                        </td>
+                        <td>
+                            <input type="number" 
+                                   class="condition-input input-text text-center" 
+                                   name="Conditions[@kv.Key]" 
+                                   value="@kv.Value" 
+                                   min="0" 
+                                   max="@Model.Borrow.Quantity" 
+                                   step="1" 
+                                   required />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <p id="totalWarning" class="alert alert-danger" style="display:none;">
+            <i class="fas fa-exclamation-triangle"></i> **Error:** Total quantity of items recorded must equal **@Model.Borrow.Quantity**.
+        </p>
+
+        <div class="form-actions form-actions-wide">
+            <button type="submit" class="btn btn-primary btn-success" id="approveBtn">
+                <i class="fas fa-clipboard-check"></i> Finalize Return
+            </button>
+            <a href="/Admin/BorrowLog/Index" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel/Back
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/countdown.js"></script>
+    <script>
+        // JS logic remains the same, but the warning/button IDs are updated for consistency
+        const borrowedQty = @Model.Borrow.Quantity;
+        const inputs = document.querySelectorAll('.condition-input');
+        const warning = document.getElementById('totalWarning');
+        const approveBtn = document.getElementById('approveBtn');
+
+        function validateTotal() {
+            let total = 0;
+            inputs.forEach(input => total += parseInt(input.value) || 0);
+
+            if (total !== borrowedQty) {
+                warning.style.display = 'block';
+                approveBtn.disabled = true;
+            } else {
+                warning.style.display = 'none';
+                approveBtn.disabled = false;
+            }
+        }
+
+        inputs.forEach(input => input.addEventListener('input', validateTotal));
+
+        // Initial validation
+        validateTotal();
+    </script>
+}

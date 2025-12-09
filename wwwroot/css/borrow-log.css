@@ -1,0 +1,141 @@
+/*
+|--------------------------------------------------------------------------
+| BORROW LOG STYLES (borrow-log.css)
+|--------------------------------------------------------------------------
+| Styles for the Borrow Log table view, status colors, and conditional rows.
+*/
+
+/* --- 1. General Search/Table Layout (Reusing from User Management/Inventory) --- */
+
+.form-search-inline {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--bg-color-content);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-search-inline .form-group-inline {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.form-search-inline .icon-prefix {
+    position: absolute;
+    left: 10px;
+    color: var(--text-color-light);
+}
+
+.form-search-inline .form-control {
+    width: 100%;
+    padding-left: 35px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-borrows th, .table-borrows td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.table-borrows thead th {
+    background-color: var(--bg-color-main);
+    color: var(--text-color-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+/* Table Actions (reusing from user-management or defining here) */
+.table-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.table-actions .btn-icon {
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.3rem;
+    font-size: 0.9rem;
+    margin-left: 5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* --- 2. Status Badges --- */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3em 0.7em;
+    border-radius: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.badge i {
+    margin-right: 5px;
+}
+
+.badge-status-pending {
+    background-color: #fffbeb; /* Light yellow */
+    color: #b45309; /* Amber text */
+}
+
+.badge-status-approved {
+    background-color: #dbeafe; /* Light blue */
+    color: #1d4ed8; /* Blue text */
+}
+
+.badge-status-rejected {
+    background-color: #fee2e2; /* Light red */
+    color: #ef4444; /* Red text */
+}
+
+.badge-status-returned {
+    background-color: #d1fae5; /* Light green */
+    color: #059669; /* Green text */
+}
+
+/* --- 3. Conditional Row Coloring (For better visibility of issues) --- */
+
+.row-pending {
+    /* Subtle highlight for pending items */
+    background-color: #fcfdf5; 
+}
+
+.row-approved {
+    /* Subtle highlight for approved items */
+    background-color: #f5faff; 
+}
+
+.row-rejected {
+    background-color: #fff5f5; /* Very light red */
+}
+
+.row-returned {
+    /* Default returned */
+    background-color: #f7fff7; 
+}
+
+.row-lost {
+    background-color: #ffd8d8; /* Strong pink/red for lost items */
+    font-weight: 600;
+}
+
+.row-damaged {
+    background-color: #fff3c4; /* Strong yellow for damaged items */
+    font-weight: 600;
+}

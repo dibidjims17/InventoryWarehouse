@@ -1,0 +1,97 @@
+@page
+@model MyRazorApp.Pages.Admin.Inventory.EditModel
+@{
+    ViewData["Title"] = "Edit Item";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-forms.css" asp-append-version="true" />
+}
+
+<div class="container">
+
+    <header class="page-header">
+        <h2 class="page-title"><i class="fas fa-box-open"></i> Edit Item</h2>
+    </header>
+    
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            @Html.Raw(Model.SuccessMessage)
+            <br />
+            Redirecting in 
+            <span id="countdown" class="countdown" 
+                  data-seconds="3" 
+                  data-redirect="/Admin/Inventory/Index"></span> 
+            seconds...
+        </div>
+    }
+
+    <form method="post" enctype="multipart/form-data" class="form">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label asp-for="Name">Name:</label>
+            <input asp-for="Name" class="input-text" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Quantity">Quantity:</label>
+            <input asp-for="Quantity" type="number" min="0" class="input-text" required />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description">Description:</label>
+            <textarea asp-for="Description" class="input-textarea"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Category">Category:</label>
+            <select asp-for="Category" class="input-select" asp-items="@(new SelectList(Model.Categories))" required>
+                <option value="">Select Category</option>
+            </select>
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group">
+            <label>Existing Image:</label>
+            @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+            {
+                <div class="image-preview">
+                    <img src="~/uploads/items/@Model.ExistingImagePath" alt="Item Image" class="image-preview-img" />
+                    <input type="hidden" asp-for="ExistingImagePath" />
+                </div>
+            }
+            else
+            {
+                <div class="text-muted">No image uploaded.</div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ImageFile">Upload New Image (optional):</label>
+            <input asp-for="ImageFile" type="file" accept="image/*" class="input-text" />
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <a asp-page="/Admin/Inventory/Index" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Back
+            </a>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/countdown.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}
