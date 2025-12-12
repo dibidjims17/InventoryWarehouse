@@ -16,7 +16,7 @@ namespace MyRazorApp.Pages.Admin.DataReport
             _mongoService = mongoService;
         }
 
-        // ----------- CHART TOTALS ------------
+        // Properties for initial page load (Server Side Rendering)
         public Dictionary<string, int> TopBorrowedItems { get; set; } = new();
         public Dictionary<string, int> BorrowStatusTotals { get; set; } = new();
         public Dictionary<string, int> ReturnRequestTotals { get; set; } = new();
@@ -24,43 +24,66 @@ namespace MyRazorApp.Pages.Admin.DataReport
         public Dictionary<string, int> UserActivityTotals { get; set; } = new();
         public Dictionary<string, int> LowStockItems { get; set; } = new();
 
-        // ----------- DETAIL TABLES ------------
         public Dictionary<string, List<object>> BorrowStatusDetails { get; set; } = new();
         public Dictionary<string, List<object>> ReturnRequestDetails { get; set; } = new();
         public Dictionary<string, List<object>> ReturnConditionDetails { get; set; } = new();
 
         public async Task OnGetAsync()
         {
-            // ------- LOAD TOTALS -------
-            TopBorrowedItems = await _mongoService.GetTopBorrowedItemsAsync();
-            BorrowStatusTotals = await _mongoService.GetBorrowStatusTotalsAsync();
-            ReturnRequestTotals = await _mongoService.GetReturnRequestTotalsAsync();
-            ReturnConditionTotals = await _mongoService.GetReturnConditionTotalsAsync();
-            UserActivityTotals = await _mongoService.GetUserActivityTotalsAsync();
-            LowStockItems = await _mongoService.GetLowStockItemsAsync();
-
-            // ------- LOAD DETAILS -------
-            BorrowStatusDetails = await _mongoService.GetBorrowStatusDetailsAsync();
-            ReturnRequestDetails = await _mongoService.GetReturnRequestDetailsAsync();
-            ReturnConditionDetails = await _mongoService.GetReturnConditionDetailsAsync();
+            // Initial Load: Defaults to "All Time" (pass nulls)
+            await LoadData(null, null);
         }
 
-        // OPTIONAL — TOP ITEMS BY MONTH (unchanged)
-        public async Task<JsonResult> OnGetMonthDataAsync(int month)
+        // ---------------------------------------------------------
+        // NEW: Central Handler for the Global Filter
+        // ---------------------------------------------------------
+        public async Task<JsonResult> OnGetDashboardDataAsync(string view, int? month, int? year)
         {
-            if (month < 1 || month > 12)
-                month = DateTime.Now.Month;
+            // If view is 'all', we pass nulls to the service. 
+            // If view is 'month', we pass the specific values.
+            int? m = (view == "month") ? month : null;
+            int? y = (view == "month") ? year : null;
 
-            int year = DateTime.Now.Year;
+            await LoadData(m, y);
 
-            var top10 = await _mongoService.GetTopBorrowedItemsByMonthAsync(month, year, 10);
-            var fullList = await _mongoService.GetFullBorrowListByMonthAsync(month, year);
-
+            // Return everything as JSON to the frontend
             return new JsonResult(new
             {
-                top10 = top10,
-                fullList = fullList
+                // Charts
+                topBorrowed = TopBorrowedItems,
+                borrowStatus = BorrowStatusTotals,
+                returnRequests = ReturnRequestTotals,
+                returnConditions = ReturnConditionTotals,
+                userActivity = UserActivityTotals,
+                lowStock = LowStockItems,
+
+                // Tables
+                details_borrow = BorrowStatusDetails,
+                details_return = ReturnRequestDetails,
+                details_condition = ReturnConditionDetails
             });
+        }
+
+        // Helper to avoid duplicating code between OnGet and OnGetDashboardData
+        private async Task LoadData(int? month, int? year)
+        {
+            // NOTE: You must update your MongoService methods to accept (int? month, int? year)
+            // If month/year are null, the service should return "All Time" data.
+            
+            TopBorrowedItems = await _mongoService.GetTopBorrowedItemsAsync(month, year);
+            BorrowStatusTotals = await _mongoService.GetBorrowStatusTotalsAsync(month, year);
+            ReturnRequestTotals = await _mongoService.GetReturnRequestTotalsAsync(month, year);
+            ReturnConditionTotals = await _mongoService.GetReturnConditionTotalsAsync(month, year);
+            UserActivityTotals = await _mongoService.GetUserActivityTotalsAsync(month, year);
+            
+            // Low stock is usually "Current State", so it often ignores date filters, 
+            // but we reload it just in case logic changes.
+            LowStockItems = await _mongoService.GetLowStockItemsAsync(); 
+
+            // Details
+            BorrowStatusDetails = await _mongoService.GetBorrowStatusDetailsAsync(month, year);
+            ReturnRequestDetails = await _mongoService.GetReturnRequestDetailsAsync(month, year);
+            ReturnConditionDetails = await _mongoService.GetReturnConditionDetailsAsync(month, year);
         }
     }
 }

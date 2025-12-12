@@ -72,7 +72,7 @@
                         <p class="category">Category: <span>@item.Category</span></p>
                         <p class="description">@item.Description</p>
                         <p class="quantity @(item.Quantity <= 5 ? "low-stock" : "")">
-                            Available Qty: **@item.Quantity**
+                            Available Qty: @item.Quantity
                         </p>
                         <div class="action">
                             @if (item.Quantity > 0)

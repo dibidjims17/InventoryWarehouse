@@ -44,6 +44,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGF0YVJlcG9ydFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/FINALS-ELECT/Pages/Admin/DataReport/Index1.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGF0YVJlcG9ydFxJbmRleDEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/FINALS-ELECT/Pages/Admin/Inventory/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cSW52ZW50b3J5XENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

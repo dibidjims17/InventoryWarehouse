@@ -5,25 +5,32 @@
 | Focus on visual appeal and modern dashboard aesthetics.
 */
 
-/* --- Global Variables (Assuming these are defined in site.css or a global file) ---
-:root {
-    --primary-color: #0d6efd;
-    --accent-color: #059669; 
-    --danger-color: #dc2626;
-    --text-color-dark: #333;
-    --text-color-light: #6b7280;
-    --bg-color-content: #ffffff;
-    --bg-color-main: #f3f4f6;
-    --border-color: #e5e7eb;
-}
-*/
-
-/* --- 1. Dashboard Layout Container (Minor updates for clarity) --- */
+/* ----------------------------------------------------------- */
+/* 1. Dashboard Layout & Header                                */
+/* ----------------------------------------------------------- */
 
 .container {
-    padding: 0;
+    padding: 0 15px; /* Add some default padding */
 }
 
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--text-color-dark);
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: var(--text-color-light);
+    margin-bottom: 0;
+}
+
+/* Dashboard-specific header titles */
 .page-header-title {
     font-size: 1.8rem;
     font-weight: 700;
@@ -37,7 +44,9 @@
     margin-bottom: 2rem;
 }
 
-/* --- 2. Dashboard Cards Grid (existing) --- */
+/* ----------------------------------------------------------- */
+/* 2. Dashboard Cards Grid                                     */
+/* ----------------------------------------------------------- */
 
 .dashboard-metrics {
     margin-bottom: 2rem;
@@ -49,7 +58,9 @@
     gap: 20px;
 }
 
-/* --- 3. Individual Card Styling (existing) --- */
+/* ----------------------------------------------------------- */
+/* 3. Individual Card Styling                                  */
+/* ----------------------------------------------------------- */
 
 .card {
     background-color: var(--bg-color-content);
@@ -62,7 +73,7 @@
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
-    position: relative; /* Added relative positioning for ::before */
+    position: relative;
 }
 
 .card:hover {
@@ -70,7 +81,7 @@
     box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15); 
 }
 
-/* Colored Bar at the top of the card for visual separation */
+/* Colored Bar at the top of the card */
 .card::before {
     content: '';
     position: absolute;
@@ -79,10 +90,10 @@
     width: 100%;
     height: 6px; 
     background-color: var(--accent-color);
-    z-index: 1; /* Ensure bar is above content */
+    z-index: 1;
 }
 
-/* Specific color mapping for cards to enhance visual look */
+/* Specific color mapping */
 .card-admin-users::before {
     background-color: #f59e0b;
 }
@@ -101,9 +112,13 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
+    /* Reset Bootstrap default padding/bg if card-header is used */
+    padding: 0 !important; 
+    background: none !important;
+    border-bottom: none !important;
 }
 
-/* Icon Wrapper: Dark Primary Background */
+/* Icon Wrapper */
 .card-icon-wrapper {
     background-color: var(--primary-color); 
     color: white;
@@ -142,7 +157,7 @@
     padding-left: 64px;
 }
 
-/* Button inside the card: Use link style */
+/* Button inside the card */
 .card .btn-primary {
     align-self: flex-end; 
     padding: 0.5rem 1rem;
@@ -153,17 +168,14 @@
 }
 
 /* ------------------------------------------------------------- */
-/* ... (existing inventory.css code above this section) ... */
-
-/* ------------------------------------------------------------- */
-/* --- 4. Inventory List/Grid Header & Search/Filter (FIXED) --- */
+/* 4. Search, Filter, and Form Layouts                           */
 /* ------------------------------------------------------------- */
 
+/* General Inventory Search Bar (form-search) */
 .form-search {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    /* *** KEY FIX 1: Ensure vertical alignment of all children is centered *** */
     align-items: center; 
     margin-bottom: 30px;
     padding: 15px;
@@ -177,16 +189,15 @@
     flex-grow: 1;
     min-width: 150px;
     margin-bottom: 0;
-    /* Ensure the form group container itself doesn't introduce misalignment */
     display: flex;
     align-items: center; 
 }
 
-/* Ensure all input/select elements have a consistent height */
+/* Consistent height for inputs */
 .form-search .input-select,
 .form-search .input-search {
     border-radius: 6px;
-    height: 40px; /* Consistent height for input/select */
+    height: 40px; 
     border: 1px solid var(--border-color);
     padding: 0.5rem 1rem;
     width: 100%;
@@ -195,34 +206,63 @@
 .form-search .input-group {
     display: flex;
     flex-grow: 2;
-    /* *** KEY FIX 2: Ensure the input group itself is aligned *** */
     align-items: center;
 }
 
 .form-search .input-group .form-control {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    /* Ensure the input matches the height defined above */
     height: 40px; 
 }
 
 .form-search .input-group .btn {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    /* Ensure the button matches the height of the input/select */
     height: 40px;
-    /* The button should be vertically centered within the group naturally now */
 }
 
 .form-search .form-actions {
     display: flex;
     gap: 10px;
     min-width: 150px;
-    /* Ensure action buttons are also vertically centered */
     align-items: center;
 }
 
-/* ... (rest of the inventory.css file remains the same) ... */
+/* Reports Page Inline Filter Bar (form-filter-inline) */
+.form-filter-inline {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--bg-color-main); /* Using lighter bg for distinction */
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.form-filter-inline .form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.form-filter-inline .icon-prefix {
+    color: var(--text-color-light);
+    font-size: 1rem;
+    padding-right: 5px;
+}
+
+.form-filter-inline .form-control {
+    height: 40px;
+    min-width: 200px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    border-color: var(--border-color);
+}
+
+/* ----------------------------------------------------------------- */
+/* 5. Inventory and Reports Table Styling & Scrolling Fix            */
+/* ----------------------------------------------------------------- */
 
 .items-title {
     font-size: 1.5rem;
@@ -242,8 +282,69 @@
     margin-top: 20px;
 }
 
+.table-wrapper {
+    /* ** SCROLLING FIX: Implements max height and scrolling ** */
+    max-height: 70vh; /* Adjust as needed for screen height */
+    overflow-y: auto;
+    
+    /* Card styling for the wrapper */
+    background-color: var(--bg-color-content);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px -5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative; /* Needed for sticky header context */
+}
+
+/* Targetting the table inside the wrapper */
+.table { 
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: separate; /* Use separate for rounded table borders if desired */
+    border-spacing: 0;
+    font-size: 0.9rem;
+}
+
+/* Table Header Styles (Sticky) */
+.table thead {
+    /* Use a stronger color for the bottom border of the header block */
+    border-bottom: 2px solid var(--border-color); 
+}
+
+.table th {
+    /* ** STICKY HEADER FIX ** */
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-color-content); /* Match wrapper background */
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); /* Subtle shadow to lift header */
+    
+    padding: 0.75rem 1rem;
+    text-align: left;
+    color: var(--text-color-dark);
+    font-weight: 600;
+}
+
+/* Table Body/Cell Styles */
+.table td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border-color-light);
+    vertical-align: middle;
+    color: var(--text-color-dark);
+}
+
+/* Row Striping (Targets Bootstrap's .table-striped) */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--bg-color-light);
+}
+
+.table tbody tr:hover {
+    background-color: #e6f7ff; /* Lighter blue hover */
+}
+
+
 /* ----------------------------------------------------------------- */
-/* --- 5. Dashboard Body Layout (Charts/Activity) (existing) --- */
+/* 6. Dashboard Body Layout (Charts/Activity)                        */
 /* ----------------------------------------------------------------- */
 
 .dashboard-divider {
@@ -251,8 +352,6 @@
     border-top: 1px solid var(--border-color);
     margin: 2rem 0;
 }
-
-/* ... (rest of dashboard-row, dashboard-chart-lg, etc. styles) ... */
 
 .dashboard-row {
     display: flex;
@@ -272,7 +371,6 @@
 
 /* Chart/Placeholder Styling */
 .chart-placeholder, .text-placeholder {
-    /* ... (existing styles) ... */
     min-height: 300px;
     background-color: var(--bg-color-main);
     border-radius: 0.25rem;
@@ -280,14 +378,13 @@
     margin-top: 1rem;
 }
 
-/* ... (status-list, card-icon-wrapper-sm, etc. existing styles) ... */
-
 
 /* --------------------------------------------------------- */
-/* --- 6. Responsive Adjustments (Updated Mobile Forms) --- */
+/* 7. Responsive Adjustments                                 */
 /* --------------------------------------------------------- */
 
 @media (max-width: 992px) {
+    /* --- General Dashboard/Large Views --- */
     .dashboard-row {
         flex-direction: column;
     }
@@ -296,7 +393,8 @@
         min-height: auto;
     }
     
-    /* Responsive adjustment for search form on smaller screens */
+    /* --- Form Adjustments --- */
+    /* Inventory Search (form-search) */
     .form-search {
         flex-direction: column;
     }
@@ -310,12 +408,41 @@
         border-radius: 6px;
     }
     .form-search .input-group .btn {
-        display: none; /* Hide separate search button on small screens */
+        display: none; 
+    }
+    
+    /* Reports Filter (form-filter-inline) */
+    .form-filter-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .form-filter-inline .form-group-inline {
+        width: 100%;
+        display: flex;
+    }
+    .form-filter-inline .form-control {
+        flex-grow: 1;
+    }
+    .form-filter-inline .form-actions .btn {
+        width: 100%;
+    }
+
+    /* --- Table Fix Reset --- */
+    .table-wrapper {
+        max-height: none;
+        overflow-y: visible;
+        box-shadow: none;
+        border: none;
+        background-color: transparent;
+    }
+    .table th {
+        position: static; /* Disable sticky header when scrolling is removed */
+        box-shadow: none;
     }
 }
 
 @media (max-width: 600px) {
-    /* ... (existing mobile card styles) ... */
+    /* --- Card Stacking --- */
     .dashboard-cards {
         grid-template-columns: 1fr;
     }
@@ -324,7 +451,7 @@
         padding: 1.25rem;
     }
     
-    /* Reset alignment for better mobile stacking */
+    /* --- Card Metrics Alignment --- */
     .card-metric, .card-subtitle {
         padding-left: 0;
         text-align: center;
@@ -336,6 +463,6 @@
         justify-content: center;
     }
     .card .btn-primary {
-        align-self: center; /* Center button on mobile */
+        align-self: center;
     }
 }

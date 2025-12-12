@@ -273,110 +273,93 @@ namespace MyRazorApp.Services
 
         // ------------------- BORROW ANALYTICS -------------------
 
-        public async Task<Dictionary<string, int>> GetTopBorrowedItemsAsync(int top = 5)
+        // 1. TOP BORROWED ITEMS
+        public async Task<Dictionary<string, int>> GetTopBorrowedItemsAsync(int? month, int? year)
         {
-            var pipeline = new[]
-            {
-                new BsonDocument("$group", new BsonDocument
-                {
-                    { "_id", "$item_name" },
-                    { "total", new BsonDocument("$sum", "$quantity") }
-                }),
-                new BsonDocument("$sort", new BsonDocument("total", -1)),
-                new BsonDocument("$limit", top)
-            };
-            var result = await _borrows.AggregateAsync<BsonDocument>(pipeline);
-            return (await result.ToListAsync())
-                .ToDictionary(d => d["_id"].AsString, d => d["total"].AsInt32);
+            var filter = GetDateFilter(month, year);
+            
+            // Aggregate: Match Date -> Group by ItemName -> Sum Quantity -> Sort -> Limit 5
+            var result = await _borrows.Aggregate()
+                .Match(filter)
+                .Group(x => x.ItemName, g => new { Name = g.Key, Total = g.Sum(x => x.Quantity) })
+                .SortByDescending(x => x.Total)
+                .Limit(5)
+                .ToListAsync();
+
+            return result.ToDictionary(x => x.Name, x => x.Total);
         }
 
-        public async Task<Dictionary<string, int>> GetBorrowStatusTotalsAsync()
+        // 2. BORROW STATUS TOTALS
+        public async Task<Dictionary<string, int>> GetBorrowStatusTotalsAsync(int? month, int? year)
         {
-            var pipeline = new[]
-            {
-                new BsonDocument("$group", new BsonDocument
-                {
-                    { "_id", "$status" },
-                    { "count", new BsonDocument("$sum", 1) }
-                })
-            };
-            var result = await _borrows.AggregateAsync<BsonDocument>(pipeline);
-            return (await result.ToListAsync())
-                .ToDictionary(d => d["_id"].AsString, d => d["count"].AsInt32);
+            var filter = GetDateFilter(month, year);
+
+            var result = await _borrows.Aggregate()
+                .Match(filter)
+                .Group(x => x.Status, g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            return result.ToDictionary(x => x.Status, x => (int)x.Count);
         }
 
-        public async Task<Dictionary<string, int>> GetReturnRequestTotalsAsync()
+        // 3. RETURN REQUEST TOTALS (Items where ReturnRequested is true)
+        public async Task<Dictionary<string, int>> GetReturnRequestTotalsAsync(int? month, int? year)
         {
-            var pipeline = new[]
+            var dateFilter = GetDateFilter(month, year);
+            var requestFilter = Builders<Borrow>.Filter.Eq(x => x.ReturnRequested, true);
+            
+            // Combine filters
+            var combinedFilter = Builders<Borrow>.Filter.And(dateFilter, requestFilter);
+
+            // Group by Status (e.g. "Pending Return" vs "Returned")
+            var result = await _borrows.Aggregate()
+                .Match(combinedFilter)
+                .Group(x => x.Status, g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            return result.ToDictionary(x => x.Status, x => (int)x.Count);
+        }
+
+        // 4. RETURN CONDITION TOTALS
+        public async Task<Dictionary<string, int>> GetReturnConditionTotalsAsync(int? month, int? year)
+        {
+            var filter = GetDateFilter(month, year);
+            
+            // Fetch all borrows that have conditions
+            var borrows = await _borrows.Find(filter).ToListAsync();
+
+            var totals = new Dictionary<string, int>();
+
+            // Process logic in memory (easier than Mongo Aggregate for Dictionaries)
+            foreach (var b in borrows)
             {
-                new BsonDocument("$group", new BsonDocument
+                if (b.ConditionsOnReturn != null)
                 {
-                    { "_id", new BsonDocument
-                        {
-                            { "return_requested", "$return_requested" },
-                            { "status", "$status" }
-                        }
-                    },
-                    { "count", new BsonDocument("$sum", 1) }
-                })
-            };
-
-            var result = await _borrows.AggregateAsync<BsonDocument>(pipeline);
-            var totals = new Dictionary<string, int> { { "Requested", 0 }, { "Approved", 0 }, { "Rejected", 0 } };
-
-            await result.ForEachAsync(d =>
-            {
-                bool requested = d["_id"]["return_requested"].AsBoolean;
-                string status = d["_id"]["status"].AsString;
-
-                if (requested && status != "Returned") totals["Requested"] += d["count"].AsInt32;
-                if (status == "Returned") totals["Approved"] += d["count"].AsInt32;
-                if (status == "Rejected" && requested) totals["Rejected"] += d["count"].AsInt32;
-            });
-
+                    foreach (var kvp in b.ConditionsOnReturn)
+                    {
+                        if (totals.ContainsKey(kvp.Key))
+                            totals[kvp.Key] += kvp.Value;
+                        else
+                            totals.Add(kvp.Key, kvp.Value);
+                    }
+                }
+            }
             return totals;
         }
 
-        public async Task<Dictionary<string, int>> GetReturnConditionTotalsAsync()
+        // 5. USER ACTIVITY (Top Users)
+        public async Task<Dictionary<string, int>> GetUserActivityTotalsAsync(int? month, int? year)
         {
-            var pipeline = new[]
-            {
-                new BsonDocument("$match", new BsonDocument
-                {
-                    { "status", "Returned" },
-                    { "conditions_on_return", new BsonDocument("$ne", BsonNull.Value) }
-                }),
-                new BsonDocument("$group", new BsonDocument
-                {
-                    { "_id", BsonNull.Value },
-                    { "Good", new BsonDocument("$sum", "$conditions_on_return.Good") },
-                    { "Damaged", new BsonDocument("$sum", "$conditions_on_return.Damaged") },
-                    { "Lost", new BsonDocument("$sum", "$conditions_on_return.Lost") }
-                })
-            };
+            var filter = GetDateFilter(month, year);
 
-            var result = await _borrows.AggregateAsync<BsonDocument>(pipeline);
-            var totals = await result.FirstOrDefaultAsync();
+            var result = await _borrows.Aggregate()
+                .Match(filter)
+                .Group(x => x.Username, g => new { User = g.Key, Count = g.Count() })
+                .SortByDescending(x => x.Count)
+                .Limit(5)
+                .ToListAsync();
 
-            return new Dictionary<string, int>
-            {
-                { "Good", totals?["Good"].AsInt32 ?? 0 },
-                { "Damaged", totals?["Damaged"].AsInt32 ?? 0 },
-                { "Lost", totals?["Lost"].AsInt32 ?? 0 }
-            };
-        }
-
-        // ------------------- USER ACTIVITY -------------------
-
-        public async Task<Dictionary<string, int>> GetUserActivityTotalsAsync()
-        {
-            var allUsers = await _users.Find(FilterDefinition<User>.Empty).ToListAsync();
-            var totals = new Dictionary<string, int>
-            {
-                { "Active", allUsers.Count(u => u.Status == "active") },
-                { "Inactive", allUsers.Count(u => u.Status != "active") }
-            };
-            return totals;
+            return result.ToDictionary(x => x.User, x => (int)x.Count);
         }
 
         // ------------------- LOW STOCK ITEMS -------------------
@@ -386,6 +369,25 @@ namespace MyRazorApp.Services
             var filter = Builders<Item>.Filter.Lte(i => i.Quantity, threshold);
             var items = await _items.Find(filter).ToListAsync();
             return items.ToDictionary(i => i.Name, i => i.Quantity);
+        }
+
+        // Helper to build the date filter
+        private FilterDefinition<Borrow> GetDateFilter(int? month, int? year)
+        {
+            var builder = Builders<Borrow>.Filter;
+            
+            // If no filter selected, return "Empty" (matches everything)
+            if (!month.HasValue || !year.HasValue)
+            {
+                return builder.Empty;
+            }
+
+            // Construct date range for that specific month
+            var startDate = new DateTime(year.Value, month.Value, 1, 0, 0, 0, DateTimeKind.Utc);
+            var endDate = startDate.AddMonths(1);
+
+            // Filter: RequestedAt >= StartDate AND RequestedAt < EndDate
+            return builder.Gte(x => x.RequestedAt, startDate) & builder.Lt(x => x.RequestedAt, endDate);
         }
 
         // ------------------- MOST BORROWED ITEMS BY MONTH -------------------
@@ -452,136 +454,78 @@ namespace MyRazorApp.Services
 
         // ------------------- TO SEE THE USER ACTIVITY -------------------
 
-        public async Task<Dictionary<string, List<object>>> GetBorrowStatusDetailsAsync()
+        // 6. BORROW STATUS DETAILS
+        public async Task<Dictionary<string, List<object>>> GetBorrowStatusDetailsAsync(int? month, int? year)
         {
-            var borrows = await _borrows.Find(FilterDefinition<Borrow>.Empty).ToListAsync();
+            var filter = GetDateFilter(month, year);
+            var list = await _borrows.Find(filter).SortByDescending(x => x.RequestedAt).Limit(50).ToListAsync();
 
-            var result = new Dictionary<string, List<object>>();
+            var dict = new Dictionary<string, List<object>>();
+            var rowList = new List<object>();
 
-            foreach (var b in borrows)
+            foreach (var item in list)
             {
-                string status = b.Status ?? "Unknown";
-
-                if (!result.ContainsKey(status))
-                    result[status] = new List<object>();
-
-                result[status].Add(new
-                {
-                    user = b.Username,
-                    item = b.ItemName,
-                    quantity = b.Quantity,
-                    date = b.RequestedAt.ToString("yyyy-MM-dd")
+                rowList.Add(new {
+                    user = item.Username,
+                    item = item.ItemName,
+                    status = item.Status,
+                    date = item.RequestedAt.ToString("yyyy-MM-dd")
                 });
             }
 
-            return result;
+            // We put everything in one key "all" because the front end flattens it anyway
+            dict.Add("all", rowList); 
+            return dict;
         }
 
-        public async Task<Dictionary<string, List<object>>> GetReturnRequestDetailsAsync()
+        // 7. RETURN REQUEST DETAILS
+        public async Task<Dictionary<string, List<object>>> GetReturnRequestDetailsAsync(int? month, int? year)
         {
-            var borrows = await _borrows.Find(FilterDefinition<Borrow>.Empty).ToListAsync();
+            var dateFilter = GetDateFilter(month, year);
+            var reqFilter = Builders<Borrow>.Filter.Eq(x => x.ReturnRequested, true);
+            var combined = Builders<Borrow>.Filter.And(dateFilter, reqFilter);
 
-            var result = new Dictionary<string, List<object>>
+            var list = await _borrows.Find(combined).SortByDescending(x => x.RequestedAt).Limit(50).ToListAsync();
+            
+            var rowList = new List<object>();
+            foreach (var item in list)
             {
-                { "Requested", new List<object>() },
-                { "Approved", new List<object>() },
-                { "Rejected", new List<object>() }
-            };
+                rowList.Add(new {
+                    user = item.Username,
+                    item = item.ItemName,
+                    type = item.Status, // or "Return Requested"
+                    date = item.RequestedAt.ToString("yyyy-MM-dd")
+                });
+            }
 
-            foreach (var b in borrows)
+            return new Dictionary<string, List<object>> { { "all", rowList } };
+        }
+
+        // 8. RETURN CONDITION DETAILS
+        public async Task<Dictionary<string, List<object>>> GetReturnConditionDetailsAsync(int? month, int? year)
+        {
+            var filter = GetDateFilter(month, year);
+            // Get items that actually have conditions recorded
+            var list = await _borrows.Find(filter).ToListAsync(); 
+
+            var rowList = new List<object>();
+
+            foreach (var item in list)
             {
-                if (b.ReturnRequested && b.Status != "Returned")
+                if (item.ConditionsOnReturn != null && item.ConditionsOnReturn.Count > 0)
                 {
-                    result["Requested"].Add(new
-                    {
-                        user = b.Username,
-                        item = b.ItemName,
-                        quantity = b.Quantity,
-                        date = b.RequestedAt.ToString("yyyy-MM-dd")
-                    });
-                }
-
-                if (b.Status == "Returned")
-                {
-                    result["Approved"].Add(new
-                    {
-                        user = b.Username,
-                        item = b.ItemName,
-                        date = b.ReturnedAt?.ToString("yyyy-MM-dd")
-                    });
-                }
-
-                if (b.Status == "Rejected" && b.ReturnRequested)
-                {
-                    result["Rejected"].Add(new
-                    {
-                        user = b.Username,
-                        item = b.ItemName,
-                        date = b.RequestedAt.ToString("yyyy-MM-dd")
+                    // Create a comma-separated string of issues (e.g., "Damaged (1), Lost (1)")
+                    var conditionsString = string.Join(", ", item.ConditionsOnReturn.Select(x => $"{x.Key} ({x.Value})"));
+                    
+                    rowList.Add(new {
+                        item = item.ItemName,
+                        extra = conditionsString, // 'extra' maps to Condition column in JS
+                        date = item.ReturnedAt.HasValue ? item.ReturnedAt.Value.ToString("yyyy-MM-dd") : "-"
                     });
                 }
             }
 
-            return result;
-        }
-
-        public async Task<Dictionary<string, List<object>>> GetReturnConditionDetailsAsync()
-        {
-            var filter = Builders<Borrow>.Filter.Eq(b => b.Status, "Returned");
-            var borrows = await _borrows.Find(filter).ToListAsync();
-
-            var result = new Dictionary<string, List<object>>
-            {
-                { "Good", new List<object>() },
-                { "Damaged", new List<object>() },
-                { "Lost", new List<object>() }
-            };
-
-            foreach (var b in borrows)
-            {
-                if (b.ConditionsOnReturn == null) continue;
-
-                // Safely format date as "YYYY-MM-DD"
-                var returnDate = b.ReturnedAt?.ToString("yyyy-MM-dd") ?? "";
-
-                // "Good"
-                if (b.ConditionsOnReturn.TryGetValue("Good", out int goodQty) && goodQty > 0)
-                {
-                    result["Good"].Add(new
-                    {
-                        user = b.Username,
-                        item = b.ItemName,
-                        qty = goodQty,
-                        date = returnDate // <-- use the formatted string
-                    });
-                }
-
-                // "Damaged"
-                if (b.ConditionsOnReturn.TryGetValue("Damaged", out int damagedQty) && damagedQty > 0)
-                {
-                    result["Damaged"].Add(new
-                    {
-                        user = b.Username,
-                        item = b.ItemName,
-                        qty = damagedQty,
-                        date = returnDate
-                    });
-                }
-
-                // "Lost"
-                if (b.ConditionsOnReturn.TryGetValue("Lost", out int lostQty) && lostQty > 0)
-                {
-                    result["Lost"].Add(new
-                    {
-                        user = b.Username,
-                        item = b.ItemName,
-                        qty = lostQty,
-                        date = returnDate
-                    });
-                }
-            }
-
-            return result;
+            return new Dictionary<string, List<object>> { { "all", rowList } };
         }
 
         // ----------------------------

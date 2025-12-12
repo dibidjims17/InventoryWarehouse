@@ -7,13 +7,6 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/datareport.css" asp-append-version="true" />
-    <style>
-        .badge-status-summary { min-width: 60px; }
-        .status-good { background-color: #1cc88a !important; color: white; }
-        .status-damaged { background-color: #f6c23e !important; color: black; }
-        .status-lost { background-color: #e74a3b !important; color: white; }
-        .status-pending, .status-approved, .status-returned { background-color: #4e73df !important; color: white; } /* Example Status colors */
-    </style>
 }
 
 <div class="container-fluid datareport-page">
@@ -58,7 +51,7 @@
     </div>
 
     <div class="row g-4">
-    
+
         <div class="col-lg-6">
             <div class="card h-100 shadow-sm">
                 <div class="card-header bg-white"><h6 class="m-0 font-weight-bold text-primary">Top Borrowed Items</h6></div>
@@ -70,7 +63,7 @@
                                 <thead><tr><th>Item</th><th class="text-end">Qty</th></tr></thead>
                                 <tbody></tbody>
                             </table>
-                        </div>    
+                        </div>    
                     </div>
                 </div>
             </div>
@@ -78,16 +71,7 @@
 
         <div class="col-lg-6">
             <div class="card h-100 shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-success">Borrow Status</h6>
-                    <select id="filterStatus" class="form-select form-select-sm" style="width:auto; margin-left: 10px;">
-                        <option value="all">All Statuses</option>
-                        <option value="returned">Returned</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="approved">Approved</option>
-                        <option value="pending">Pending</option>
-                    </select>
-                </div>
+                <div class="card-header bg-white"><h6 class="m-0 font-weight-bold text-success">Borrow Status</h6></div>
                 <div class="card-body d-flex">
                     <div class="chart-wrapper flex-fill"><canvas id="chartStatus"></canvas></div>
                     <div class="flex-fill ms-3 table-wrapper">
@@ -104,14 +88,7 @@
 
         <div class="col-lg-6">
             <div class="card h-100 shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-warning">Return Requests</h6>
-                    <select id="filterRequests" class="form-select form-select-sm" style="width:auto; margin-left: 10px;">
-                        <option value="all">All Types</option>
-                        <option value="returned">Returned</option>
-                        <option value="approved">Approved</option>
-                    </select>
-                </div>
+                <div class="card-header bg-white"><h6 class="m-0 font-weight-bold text-warning">Return Requests</h6></div>
                 <div class="card-body d-flex">
                     <div class="chart-wrapper flex-fill"><canvas id="chartRequests"></canvas></div>
                     <div class="flex-fill ms-3 table-wrapper">
@@ -128,12 +105,7 @@
 
         <div class="col-lg-6">
             <div class="card h-100 shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-danger">Condition Issues</h6>
-                    <select id="filterConditions" class="form-select form-select-sm" style="width:auto; margin-left: 10px;">
-                        <option value="all">All Conditions</option>
-                        <option value="good">Good</option>      <option value="damaged">Damaged</option> <option value="lost">Lost</option>       </select>
-                    </div>
+                <div class="card-header bg-white"><h6 class="m-0 font-weight-bold text-danger">Condition Issues</h6></div>
                 <div class="card-body d-flex">
                     <div class="chart-wrapper flex-fill"><canvas id="chartConditions"></canvas></div>
                     <div class="flex-fill ms-3 table-wrapper">
@@ -147,15 +119,10 @@
                 </div>
             </div>
         </div>
-        
         <div class="col-lg-6">
             <div class="card h-100 shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-white">
                     <h6 class="m-0 font-weight-bold text-danger">Low Stock Items</h6>
-                    <select id="sortLowStock" class="form-select form-select-sm" style="width:auto; margin-left: 10px;">
-                        <option value="asc">From Lowest</option>
-                        <option value="desc">From Highest</option>
-                    </select>
                 </div>
                 <div class="card-body d-flex">
                     <div class="chart-wrapper flex-fill">
@@ -169,7 +136,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                        </div>    
+                        </div>    
                     </div>
                 </div>
             </div>
@@ -205,12 +172,6 @@
         const ySel = document.getElementById('filterYear');
         const btn = document.getElementById('btnRefresh');
 
-        // NEW FILTER SELECTORS
-        const statusFilter = document.getElementById('filterStatus');
-        const requestsFilter = document.getElementById('filterRequests');
-        const conditionsFilter = document.getElementById('filterConditions');
-        const lowStockSort = document.getElementById('sortLowStock');
-
         // Initial set of date defaults
         const now = new Date();
         mSel.value = now.getMonth() + 1;
@@ -221,12 +182,6 @@
             mSel.disabled = isAll;
             ySel.disabled = isAll;
         });
-
-        // --- ATTACH EVENT LISTENERS FOR CARD FILTERS/SORTS ---
-        statusFilter.addEventListener('change', () => renderTableStatus(initialData.details_borrow));
-        requestsFilter.addEventListener('change', () => renderTableRequests(initialData.details_return));
-        conditionsFilter.addEventListener('change', () => renderTableConditions(initialData.details_condition));
-        lowStockSort.addEventListener('change', () => renderTableLowStock(initialData.lowStock)); 
 
         // REFRESH BUTTON CLICK
         btn.addEventListener('click', async () => {
@@ -260,12 +215,6 @@
     // ---------------- HELPER FUNCTIONS ----------------
 
     function renderAll(data) {
-        // Store latest fetched data (needed for client-side filtering)
-        initialData.details_borrow = data.details_borrow;
-        initialData.details_return = data.details_return;
-        initialData.details_condition = data.details_condition;
-        initialData.lowStock = data.lowStock;
-
         // Update Charts
         updateChart('chartTopBorrowed', data.topBorrowed);
         updateChart('chartStatus', data.borrowStatus);
@@ -273,12 +222,13 @@
         updateChart('chartConditions', data.returnConditions);
         updateChart('chartLowStock', data.lowStock);
 
-        // Update Tables using new dedicated renderers (which apply initial filters)
-        updateSimpleTable('tableTopBorrowed', data.topBorrowed); 
-        renderTableLowStock(data.lowStock); 
-        renderTableStatus(data.details_borrow);
-        renderTableRequests(data.details_return);
-        renderTableConditions(data.details_condition);
+
+        // Update Tables
+        updateSimpleTable('tableTopBorrowed', data.topBorrowed);
+        updateSimpleTable('tableLowStock', data.lowStock);
+        updateComplexTable('tableStatus', data.details_borrow, ['user', 'item', 'status']);
+        updateComplexTable('tableRequests', data.details_return, ['user', 'item', 'type']);
+        updateComplexTable('tableConditions', data.details_condition, ['item', 'extra', 'date']);
     }
 
     function updateChart(canvasId, dataMap) {
@@ -288,11 +238,13 @@
         const colors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'];
 
         if (charts[canvasId]) {
+            // Update existing
             charts[canvasId].data.labels = labels.length ? labels : ["No Data"];
             charts[canvasId].data.datasets[0].data = values.length ? values : [1];
             charts[canvasId].data.datasets[0].backgroundColor = values.length ? colors : ['#efefef'];
             charts[canvasId].update();
         } else {
+            // Create new
             charts[canvasId] = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -323,10 +275,13 @@
             tbody.innerHTML += `<tr><td>${k}</td><td class="text-end fw-bold">${v}</td></tr>`;
         }
     }
-    
-    // --- CORE FILTERING LOGIC ---
-    // Function to flatten data and apply client-side filtering based on a select box
-    function getFlatListAndFilter(detailsObj, filterId, keyName) {
+
+    function updateComplexTable(tableId, detailsObj, keys) {
+        // DetailsObj comes from C# as Dictionary<string, List<object>>
+        // We need to flatten it.
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        tbody.innerHTML = '';
+        
         let flatList = [];
         if(detailsObj) {
             Object.values(detailsObj).forEach(list => {
@@ -334,149 +289,31 @@
             });
         }
 
-        const filterValue = document.getElementById(filterId).value.toLowerCase();
-        if(filterValue === 'all') return flatList;
-
-        return flatList.filter(obj => {
-            let value = obj[keyName] || obj[keyName.charAt(0).toUpperCase() + keyName.slice(1)] || obj.extra || "";
-            if(!value) return false;
-
-            // Extract just the word before any parentheses, e.g., "Good" from "Good (3)"
-            value = value.toString().split('(')[0].trim().toLowerCase();
-            return value === filterValue;
-        });
-    }
-
-    // ---------------- DEDICATED TABLE RENDERERS (Handle Filter/Sort) ----------------
-
-    function renderTableLowStock(dataMap) {
-        const tbody = document.querySelector('#tableLowStock tbody');
-        tbody.innerHTML = '';
-        
-        const sortValue = document.getElementById('sortLowStock').value; 
-        
-        let lowStockArray = Object.entries(dataMap || {});
-        
-        lowStockArray.sort(([, qtyA], [, qtyB]) => {
-            return sortValue === 'asc' ? qtyA - qtyB : qtyB - qtyA;
-        });
-
-        if(lowStockArray.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="2" class="text-center text-muted">No Data</td></tr>';
-            return;
-        }
-
-        lowStockArray.forEach(([itemName, qty]) => {
-            tbody.innerHTML += `<tr><td>${itemName}</td><td class="text-end fw-bold">${qty}</td></tr>`;
-        });
-    }
-
-    function renderTableStatus(detailsObj) {
-        const tbody = document.querySelector('#tableStatus tbody');
-        tbody.innerHTML = '';
-        
-        // Filter by Status (keyName is 'status')
-        const filteredList = getFlatListAndFilter(detailsObj, 'filterStatus', 'status');
-
-        if(filteredList.length === 0) {
+        if(flatList.length === 0) {
             tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No Data</td></tr>';
             return;
         }
 
-        filteredList.forEach(obj => {
-            const u = obj.UserName || obj.User || obj.user || "Unknown";
-            const i = obj.ItemName || obj.Item || obj.item || "Unknown";
-            const s = obj.Status || obj.status || "Unknown";
+        flatList.forEach(obj => {
+            // Mapping dynamic object keys safely
+            const col1 = obj.user || obj.username || obj.User || obj.ItemName || obj.item || '-';
+            const col2 = obj.item || obj.ItemName || obj.type || obj.condition || '-'; 
+            const col3 = obj.status || obj.type || obj.extra || obj.date || '-';
             
-            const badgeClass = `status-${s.toLowerCase()}`;
+            // Adjust this based on your exact object structure coming from Mongo
+            let row = `<tr><td>${col1}</td><td>${col2}</td><td>${col3}</td></tr>`;
             
-            const row = `<tr><td>${u}</td><td>${i}</td><td class="text-center"><span class="badge badge-status-summary ${badgeClass}">${s}</span></td></tr>`;
-            tbody.innerHTML += row;
-        });
-    }
-
-    function renderTableRequests(detailsObj) {
-        const tbody = document.querySelector('#tableRequests tbody');
-        tbody.innerHTML = '';
-        
-        // Filter by Type (keyName is 'type')
-        const filteredList = getFlatListAndFilter(detailsObj, 'filterRequests', 'type');
-
-        if(filteredList.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No Data</td></tr>';
-            return;
-        }
-
-        filteredList.forEach(obj => {
-            const u = obj.UserName || obj.User || obj.user || "Unknown";
-            const i = obj.ItemName || obj.Item || obj.item || "Unknown";
-            const t = obj.Type || obj.type || "Unknown";
-            
-            const badgeClass = `status-${t.toLowerCase()}`;
-
-            const row = `<tr><td>${u}</td><td>${i}</td><td class="text-center"><span class="badge badge-status-summary ${badgeClass}">${t}</span></td></tr>`;
-            tbody.innerHTML += row;
-        });
-    }
-
-    function renderTableConditions(detailsObj) {
-    const tbody = document.querySelector('#tableConditions tbody');
-    tbody.innerHTML = '';
-
-    let flatList = [];
-
-    if(detailsObj) {
-        Object.values(detailsObj).forEach(itemList => {
-            if(Array.isArray(itemList)) {
-                itemList.forEach(obj => {
-                    const itemName = obj.ItemName || obj.Item || obj.item || "Unknown";
-                    const date = obj.Date || obj.date || "N/A";
-                    const condStr = obj.conditions_on_return || obj.extra || "";
-
-                    // Split string by comma, then extract condition and count
-                    condStr.split(',').forEach(c => {
-                        const match = c.trim().match(/^(\w+)\s*\((\d+)\)$/);
-                        if(match) {
-                            const condition = match[1];
-                            const count = parseInt(match[2], 10);
-
-                            // Only include if count > 0
-                            if(count > 0) {
-                                flatList.push({
-                                    item: itemName,
-                                    condition: condition,
-                                    count: count,
-                                    date: date
-                                });
-                            }
-                        }
-                    });
-                });
+            // Specific overrides for your specific tables if generic mapping fails:
+            if(tableId === 'tableStatus') {
+                 // Expecting: User, Item, Status
+                 const u = obj.UserName || obj.User || obj.user || "Unknown";
+                 const i = obj.ItemName || obj.Item || obj.item || "Unknown";
+                 const s = obj.Status || obj.status || "Unknown";
+                 row = `<tr><td>${u}</td><td>${i}</td><td><span class="badge bg-secondary">${s}</span></td></tr>`;
             }
+
+            tbody.innerHTML += row;
         });
     }
-
-    // Apply filter
-    const filterValue = document.getElementById('filterConditions').value.toLowerCase();
-    if(filterValue !== 'all') {
-        flatList = flatList.filter(row => row.condition.toLowerCase() === filterValue);
-    }
-
-    if(flatList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No Data</td></tr>';
-        return;
-    }
-
-    // Render table
-    flatList.forEach(row => {
-        const badgeClass = `status-${row.condition.toLowerCase()}`;
-        tbody.innerHTML += `<tr>
-            <td>${row.item}</td>
-            <td class="text-center"><span class="badge badge-status-summary ${badgeClass}">${row.condition} (${row.count})</span></td>
-            <td>${row.date}</td>
-        </tr>`;
-    });
-}
-
 </script>
 }

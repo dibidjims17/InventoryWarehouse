@@ -35,6 +35,8 @@
 
 .form-filter-inline .form-control {
     padding-left: 35px;
+    width: 100%;
+    height: 40%;
 }
 
 /* --- CUSTOM DROPDOWN ICON STYLING --- */
