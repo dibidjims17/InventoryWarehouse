@@ -49,5 +49,50 @@ namespace MyRazorApp.Models
 
         [BsonElement("conditions_on_return")]
         public Dictionary<string, int>? ConditionsOnReturn { get; set; } // e.g., Good, Damaged, Lost
+
+        [BsonIgnore]
+        public string RowClass
+        {
+            get
+            {
+                if (Status == "Returned")
+                {
+                    if (ConditionsOnReturn?.ContainsKey("Lost") == true &&
+                        ConditionsOnReturn["Lost"] > 0)
+                        return "row-lost";
+
+                    if (ConditionsOnReturn?.ContainsKey("Damaged") == true &&
+                        ConditionsOnReturn["Damaged"] > 0)
+                        return "row-damaged";
+
+                    return "row-returned";
+                }
+
+                return Status switch
+                {
+                    "Pending" => "row-pending",
+                    "Approved" => "row-approved",
+                    "Rejected" => "row-rejected",
+                    _ => ""
+                };
+            }
+        }
+
+        [BsonIgnore]
+        public string ConditionSummary
+        {
+            get
+            {
+                if (ConditionsOnReturn == null || ConditionsOnReturn.Count == 0)
+                    return "-";
+
+                return string.Join(", ",
+                    ConditionsOnReturn.Select(c => $"{c.Key}: {c.Value}"));
+            }
+        }
+
+        [BsonIgnore]
+        public bool CanRequestReturn =>
+            Status == "Approved" && !ReturnRequested;
     }
 }

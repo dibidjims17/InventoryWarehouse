@@ -108,34 +108,3 @@
     background-color: #d1fae5; /* Light green */
     color: #059669; /* Green text */
 }
-
-/* --- 3. Conditional Row Coloring (For better visibility of issues) --- */
-
-.row-pending {
-    /* Subtle highlight for pending items */
-    background-color: #fcfdf5; 
-}
-
-.row-approved {
-    /* Subtle highlight for approved items */
-    background-color: #f5faff; 
-}
-
-.row-rejected {
-    background-color: #fff5f5; /* Very light red */
-}
-
-.row-returned {
-    /* Default returned */
-    background-color: #f7fff7; 
-}
-
-.row-lost {
-    background-color: #ffd8d8; /* Strong pink/red for lost items */
-    font-weight: 600;
-}
-
-.row-damaged {
-    background-color: #fff3c4; /* Strong yellow for damaged items */
-    font-weight: 600;
-}

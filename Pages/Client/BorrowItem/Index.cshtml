@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="~/css/borrow.css" asp-append-version="true" />
 }
 
-<div class="container"> 
-    
+<div class="container">
+
     <header class="page-header">
         <h2 class="page-title"><i class="fas fa-handshake"></i> My Borrowed Items</h2>
     </header>
@@ -25,76 +25,76 @@
         <div class="alert alert-success success-message">@Model.SuccessMessage</div>
     }
 
-    @if (Model.Borrows.Count == 0)
+    @if (!Model.Borrows.Any())
     {
         <p class="no-items">You have not borrowed any items yet.</p>
     }
     else
     {
-        <table class="table table-borrows">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th class="text-center">Quantity</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Return Requested</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var borrow in Model.Borrows)
-                {
-                    <tr class="@GetRowClass(borrow.Status)">
-                        <td>@borrow.ItemName</td>
-                        <td class="text-center">@borrow.Quantity</td>
-                        <td class="text-center">
-                            <span class="status-badge status-@borrow.Status.ToLower()">
-                                @borrow.Status
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            @if (borrow.ReturnRequested)
-                            {
-                                <span class="text-warning"><i class="fas fa-clock"></i> Yes (Pending)</span>
-                            }
-                            else
-                            {
-                                <span class="text-secondary">No</span>
-                            }
-                        </td>
-                        <td class="text-center">
-                            @if (borrow.Status == "Approved" && !borrow.ReturnRequested)
-                            {
-                                <form method="post" asp-page-handler="RequestReturn" style="display:inline">
-                                    <input type="hidden" name="borrowId" value="@borrow.Id" />
-                                    <button type="submit" class="btn btn-sm btn-info">
-                                        <i class="fas fa-undo-alt"></i> Request Return
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <span class="text-muted">-</span> 
-                            }
-                        </td>
+        <div class="table-wrapper card">
+            <table class="table table-borrows">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Return Status</th>
+                        <th class="text-center">Return Conditions</th>
+                        <th class="text-center">Action</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var borrow in Model.Borrows)
+                    {
+                        <tr class="@borrow.RowClass">
+                            <td><strong>@borrow.ItemName</strong></td>
+                            <td class="text-center">@borrow.Quantity</td>
+                            <td class="text-center">
+                                <span class="badge badge-status-@borrow.Status.ToLower()">
+                                    <i class="fas @(borrow.Status.ToLower() switch {
+                                        "pending" => "fa-clock",
+                                        "approved" => "fa-handshake",
+                                        "rejected" => "fa-times-circle",
+                                        "returned" => "fa-check-double",
+                                        _ => "fa-info-circle"
+                                    })"></i>
+                                    @borrow.Status
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                @if (borrow.ReturnRequested && borrow.Status != "Returned")
+                                {
+                                    <span class="text-warning"><i class="fas fa-clock"></i> Pending</span>
+                                }
+                                else if (borrow.Status == "Returned")
+                                {
+                                    <span class="text-success"><i class="fas fa-check-double"></i> Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="text-secondary">No</span>
+                                }
+                            </td>
+                            <td class="text-center"><small>@borrow.ConditionSummary</small></td>
+                            <td class="text-center table-actions">
+                                @if (borrow.CanRequestReturn)
+                                {
+                                    <form method="post" asp-page-handler="RequestReturn" style="display:inline">
+                                        <input type="hidden" name="borrowId" value="@borrow.Id" />
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-undo-alt"></i> Request Return
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>
-
-@functions {
-    // Helper function to apply color to the entire row based on status
-    public string GetRowClass(string status)
-    {
-        return status switch
-        {
-            "Approved" => "row-approved",
-            "Pending" => "row-pending",
-            "Rejected" => "row-rejected",
-            "Returned" => "row-returned",
-            _ => "",
-        };
-    }
-}

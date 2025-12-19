@@ -1,51 +1,49 @@
 @page
-@model MyRazorApp.Pages.Admin.Reports.ReportsModel
+@model MyRazorApp.Pages.Client.Activity.IndexModel
 @{
-    ViewData["Title"] = "Activity Reports";
+    ViewData["Title"] = "My Activity";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/activity-reports.css" asp-append-version="true" />
-    @* REMINDER: Ensure Font Awesome CSS is linked in your main Layout file! *@
 }
 
 <div class="container">
 
     <header class="page-header">
-        <h2 class="page-title"><i class="fas fa-file-alt"></i> Activity Reports</h2>
+        <h2 class="page-title"><i class="fas fa-history"></i> My Activity</h2>
     </header>
 
     <form method="get" id="searchForm" class="form-search-filter">
-        <div class="form-group-inline filter-select-wrapper">
-            <i class="fas fa-filter icon-prefix"></i>
-            <select asp-for="ReportTypeFilter" class="form-control" onchange="this.form.submit()">
-                <option value="" selected="@(string.IsNullOrEmpty(Model.ReportTypeFilter) ? "selected" : null)">All Activity Types</option>
-                
-                @foreach (var type in Model.ReportTypes)
-                {
-                    <option value="@type" selected="@(Model.ReportTypeFilter == type ? "selected" : null)">
-                        @type
-                    </option>
-                }
-            </select>
-        </div>
-
-        <div class="form-actions">
-            @if (!string.IsNullOrEmpty(Model.ReportTypeFilter))
+    <div class="form-group-inline filter-select-wrapper">
+        <i class="fas fa-filter icon-prefix"></i>
+        <select name="ActivityTypeFilter" class="form-control" onchange="this.form.submit()">
+            <option value="" selected="@(string.IsNullOrEmpty(Model.ActivityTypeFilter) ? "selected" : null)">All Activity Types</option>
+            @foreach (var type in Model.ActivityTypes)
             {
-                <button type="button" class="btn btn-secondary" onclick="resetSearchForm()">
-                    <i class="fas fa-times"></i> Reset Filter
-                </button>
+                <option value="@type" selected="@(Model.ActivityTypeFilter == type ? "selected" : null)">
+                    @type
+                </option>
             }
-        </div>
-    </form>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        @if (!string.IsNullOrEmpty(Model.ActivityTypeFilter))
+        {
+            <button type="button" class="btn btn-secondary" onclick="resetSearchForm()">
+                <i class="fas fa-times"></i> Reset Filter
+            </button>
+        }
+    </div>
+</form>
 
     <div class="spacer-20"></div>
-    
+
     @if (!Model.Reports.Any())
     {
-        <p class="no-items">No activity reports found for the selected filter.</p>
+        <p class="no-items">You have no activity records yet.</p>
     }
     else
     {
@@ -79,7 +77,7 @@
 @section Scripts {
     <script>
         function resetSearchForm() {
-            document.getElementById('searchForm').querySelector('[name="ReportTypeFilter"]').value = '';
+            document.getElementById('searchForm').querySelector('[name="ActivityTypeFilter"]').value = '';
             document.getElementById('searchForm').submit();
         }
     </script>

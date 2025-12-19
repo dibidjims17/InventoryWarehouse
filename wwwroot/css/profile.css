@@ -138,3 +138,55 @@
     margin-top: 10px;
     font-weight: 600;
 }
+
+/* ======================================
+   CARD ALIGNMENT FIX
+====================================== */
+
+/* Ensure cards stretch evenly */
+.profile-info-card,
+.profile-forms-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Normalize card body spacing */
+.profile-info-card .card-body,
+.profile-forms-card .card-body {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+/* Center profile card content vertically */
+.profile-info-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Keep form card content top-aligned */
+.profile-forms-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Align titles consistently */
+.profile-forms-card .card-title {
+    margin-top: 0;
+}
+
+
+/* --- Card Background Fix --- */
+.profile-info-card,
+.profile-forms-card {
+    background-color: #ffffff; /* solid white */
+}
+
+/* Optional: slightly softer look */
+.profile-info-card .card-body,
+.profile-forms-card .card-body {
+    background-color: #ffffff;
+}

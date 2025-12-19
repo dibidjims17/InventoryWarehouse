@@ -209,6 +209,30 @@ namespace MyRazorApp.Services
                                  .ToListAsync();
         }
 
+        /// <summary>
+        /// Fetch reports related to a specific user (TargetName = username)
+        /// </summary>
+        public async Task<List<Report>> GetReportsByUserAsync(string username, string? type = null, int limit = 100)
+        {
+            if (string.IsNullOrEmpty(username))
+                return new List<Report>();
+
+            var filterBuilder = Builders<Report>.Filter;
+            var filter = filterBuilder.Eq(r => r.TargetName, username); // Must match TargetName
+
+            // Optional type filter
+            if (!string.IsNullOrEmpty(type))
+                filter &= filterBuilder.Eq(r => r.Type, type);
+
+            return await _reports.Find(filter)
+                                 .SortByDescending(r => r.Timestamp)
+                                 .Limit(limit)
+                                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Create a new report
+        /// </summary>
         public async Task CreateReportAsync(Report report)
         {
             report.Id = null; // MongoDB generates ObjectId
@@ -217,11 +241,35 @@ namespace MyRazorApp.Services
             await _reports.InsertOneAsync(report);
         }
 
-        // Get all distinct report types
+        /// <summary>
+        /// Get all distinct report types
+        /// </summary>
         public async Task<List<string>> GetDistinctReportTypesAsync()
         {
             var types = await _reports.Distinct<string>("Type", FilterDefinition<Report>.Empty).ToListAsync();
             return types.OrderBy(t => t).ToList();
+        }
+
+        // MongoService.cs
+        public async Task<List<Report>> GetReportsForUserAsync(string username, string? type = null, int limit = 50)
+        {
+            var filterBuilder = Builders<Report>.Filter;
+            var filter = filterBuilder.Empty;
+
+            // Optional filter by type
+            if (!string.IsNullOrEmpty(type))
+                filter &= filterBuilder.Eq(r => r.Type, type);
+
+            // Filter: either they performed it OR their username is mentioned in Details
+            filter &= filterBuilder.Or(
+                filterBuilder.Eq(r => r.PerformedBy, username),
+                filterBuilder.Regex(r => r.Details, new BsonRegularExpression(username, "i"))
+            );
+
+            return await _reports.Find(filter)
+                                 .SortByDescending(r => r.Timestamp)
+                                 .Limit(limit)
+                                 .ToListAsync();
         }
 
         // ----------------------------

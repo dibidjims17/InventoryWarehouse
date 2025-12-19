@@ -238,3 +238,36 @@ h1, h2, h3, h4, h5, h6 {
         width: 100%;
     }
 }
+
+/* ======================================
+   GLOBAL CUSTOM SCROLLBAR
+====================================== */
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #adb5bd #f1f3f5;
+}
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #f1f3f5;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #adb5bd;
+    border-radius: 12px;
+    border: 3px solid #f1f3f5;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #868e96;
+}
+
+
+

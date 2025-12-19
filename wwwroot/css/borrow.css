@@ -1,131 +1,113 @@
 /*
-|--------------------------------------------------------------------------
-| BORROW ITEM STYLES (borrow.css)
-|--------------------------------------------------------------------------
-| Specific styles for My Borrowed Items page, focusing on table visualization.
+|----------------------------------------------------------------------
+| BORROW ITEM STYLES - Client Side (borrow.css)
+| Inspired by Admin Borrow Logs
+|----------------------------------------------------------------------
 */
 
-/* --- Page Header (Reusing inventory.css styles if possible) --- */
+/* --- Page Title --- */
 .page-title i {
-    color: var(--primary-color); /* Assuming primary color is defined */
+    color: var(--primary-color);
 }
 
-/* --- Message/Error Styling --- */
+/* --- Messages --- */
 .alert {
     margin: 1rem 0;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     font-weight: 500;
 }
 
+/* --- No Items Text --- */
 .no-items {
     text-align: center;
     padding: 50px;
-    background-color: var(--bg-color-content);
-    border: 1px dashed var(--border-color);
+    background-color: #f8f9fa;
+    border: 1px dashed #ced4da;
     border-radius: 8px;
-    color: var(--text-color-light);
+    color: #6c757d;
     font-size: 1.1rem;
     margin-top: 20px;
 }
 
-/* --- Borrow Table Styling --- */
+/* --- Table Wrapper --- */
+.table-wrapper.card {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+/* --- Table Styles --- */
 .table-borrows {
     width: 100%;
-    margin-top: 20px;
     border-collapse: separate;
-    border-spacing: 0 10px; /* Adds significant space between rows */
+    border-spacing: 0 10px;
 }
 
-.table-borrows th {
-    font-weight: 600;
+.table-borrows thead th {
+    background-color: var(--bg-color-main);
     color: var(--text-color-dark);
-    padding-bottom: 15px !important;
-    border-bottom: 2px solid var(--border-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 12px 15px;
+    border-bottom: 2px solid #dee2e6;
 }
 
-.table-borrows tbody tr {
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
-}
-
-.table-borrows tbody tr:hover {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-}
-
-.table-borrows td {
+.table-borrows tbody td {
+    padding: 12px 15px;
     vertical-align: middle;
-    padding: 15px 12px;
-    border-top: none !important;
-    border-bottom: none !important;
-}
-
-/* Rounding corners on the first/last cells of the rows */
-.table-borrows tbody tr td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-.table-borrows tbody tr td:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-
-/* --- Row Status Coloring (Subtle background hint) --- */
-.row-approved {
-    border-left: 5px solid #28a745; /* Green */
-}
-.row-pending {
-    border-left: 5px solid #ffc107; /* Yellow */
-}
-.row-rejected {
-    border-left: 5px solid #dc3545; /* Red */
-}
-.row-returned {
-    border-left: 5px solid #6c757d; /* Gray */
 }
 
 /* --- Status Badges --- */
-.status-badge {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 5px;
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3em 0.7em;
+    border-radius: 0.3rem;
     font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
-.status-approved {
-    background-color: #d4edda;
-    color: #155724;
+.badge i {
+    margin-right: 5px;
 }
 
-.status-pending {
-    background-color: #fff3cd;
-    color: #856404;
+.badge-status-pending {
+    background-color: #fffbeb;
+    color: #b45309;
 }
 
-.status-rejected {
-    background-color: #f8d7da;
-    color: #721c24;
+.badge-status-approved {
+    background-color: #dbeafe;
+    color: #1d4ed8;
 }
 
-.status-returned {
-    background-color: #e2e6ea;
-    color: #383d41;
+.badge-status-rejected {
+    background-color: #fee2e2;
+    color: #ef4444;
 }
 
-/* --- Action Button --- */
-.btn-info {
-    /* Custom button style for Request Return */
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    color: white;
+.badge-status-returned {
+    background-color: #d1fae5;
+    color: #059669;
 }
-.btn-info:hover {
-    background-color: #057d56;
-    border-color: #057d56;
+
+/* --- Return Status Text --- */
+.text-warning { color: #b45309; font-weight: 600; }
+.text-success { color: #059669; font-weight: 600; }
+.text-secondary { color: #6c757d; font-weight: 500; }
+
+/* --- Action Buttons --- */
+.table-actions .btn {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .table-borrows { display: block; white-space: nowrap; }
+    .table-borrows th, .table-borrows td { font-size: 0.85rem; padding: 8px 10px; }
 }
