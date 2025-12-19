@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("finals-elect")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+056cc0cc1cb716fe8d3be577900462694c94f8a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b1d2d38ccdeaa0f287c81a9ffc81429c60388f07")]
 [assembly: System.Reflection.AssemblyProductAttribute("finals-elect")]
 [assembly: System.Reflection.AssemblyTitleAttribute("finals-elect")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
